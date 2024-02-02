@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 const Form = styled.form`
   ${(props) =>
-    props.type === "regular" &&
+    props.type === "login" &&
     css`
       padding: 2.4rem 4rem;
 
@@ -17,12 +17,17 @@ const Form = styled.form`
     css`
       width: 80rem;
     `}
+  ${(props) =>
+    props.type === "signup" &&
+    css`
+      width: 48rem;
+    `}
     
   overflow: hidden;
   font-size: 1.4rem;
 `;
 Form.defaultProps = {
-  type: "regular",
+  type: "login",
 };
 
 export default Form;

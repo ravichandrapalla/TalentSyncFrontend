@@ -16,10 +16,10 @@ function SignupForm() {
 
   function onSubmit({ fullName, email, password }) {
     signup({ fullName, email, password }, { onSettled: reset });
-    console.log(fullName, email, password);
+    // console.log(fullName, email, password);
   }
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit)} type="signup">
       <FormRow label="Full name" error={errors?.fullName?.message}>
         <StyledInput
           type="text"
@@ -78,7 +78,7 @@ function SignupForm() {
       <FormRow>
         {/* type is an HTML attribute! */}
         <Button variation="secondary" type="reset" onClick={reset}>
-          Cancel
+          Clear
         </Button>
         <Button disabled={isLoading}>Create new user</Button>
       </FormRow>

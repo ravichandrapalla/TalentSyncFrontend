@@ -1,23 +1,35 @@
 /* eslint-disable no-unused-vars */
 // import supabase, { supabaseUrl } from "./supabase";
-
+import toast from "react-hot-toast";
+import config from "../config";
+import axios from "axios";
 export async function signup({ fullName, email, password }) {
   // const { data, error } = await Promise.resolve("Signup complete");
   // if (error) throw new Error(error.message);
   // return data;
-  const data = await Promise((resolve) => {
-    setTimeout(() => {
-      resolve("Signup successful");
-    }, 2000);
-  });
-  return data;
+  try {
+    const response = await axios.post(`${config.apiBaseUrl}/signup`, {
+      fullName,
+      email,
+      password,
+    });
+    const { data } = response.data;
+    return data;
+  } catch (error) {
+    console.log("error is ", error.message);
+    toast.error(error.message);
+    throw new Error("Error signing up");
+  }
 }
 
 export async function login({ email, password }) {
-  const { data, error } = await Promise.resolve("Logged in");
-  if (error) throw new Error(error.message);
-  //   console.log(data);
-  return data;
+  // const { data, error } = await Promise.resolve("Logged in");
+  // if (error) throw new Error(error.message);
+  // //   console.log(data);
+  // return data;
+  fetch(`${config.apiBaseUrl}`)
+    .then((data) => console.log(data))
+    .catch((err) => console.log(err));
 }
 
 // export async function getCurrentUser() {
