@@ -2,6 +2,7 @@
 import { useMutation } from "react-query";
 import { signup as signupApi } from "../../services/apiAuth";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 export function useSignup() {
   const { mutate: signup, isLoading } = useMutation({
@@ -12,10 +13,9 @@ export function useSignup() {
       );
     },
     onError: (error) => {
-      // console.log("i am", String(error), "type is ,", typeof error);
-      // console.log("modified", typeof error.toString());
       toast.error(error.toString());
     },
   });
+
   return { signup, isLoading };
 }

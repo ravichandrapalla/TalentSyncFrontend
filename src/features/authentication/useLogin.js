@@ -8,14 +8,14 @@ export default function useLogin() {
   // const navigate = useNavigate();
   const { mutate: login, isLoading } = useMutation({
     mutationFn: ({ email, password }) => loginApi({ email, password }),
-    onSuccess: (user) => {
+    onSuccess: (msg) => {
       // queryClient.setQueryData(["user"], user.user);
       // navigate("/dashboard", { replace: true });
-      console.log(user);
+      toast.success(msg);
     },
     onError: (err) => {
       console.log(err);
-      toast.error("Provided email and password does not match");
+      toast.error(err.toString());
     },
   });
   return { login, isLoading };

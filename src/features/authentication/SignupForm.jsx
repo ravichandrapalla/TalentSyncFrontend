@@ -3,20 +3,43 @@ import { useForm } from "react-hook-form";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
-
+import styled from "styled-components";
 import { useSignup } from "./useSignup";
 import StyledInput from "../../ui/StyledInput";
+import Spinner from "../../ui/Spinner";
 
 // Email regex: /\S+@\S+\.\S+/
+const SpinnerContainer = styled.section`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
 
 function SignupForm() {
   const { signup, isLoading } = useSignup();
-  const { register, formState, getValues, handleSubmit, reset } = useForm();
+  const { register, formState, getValues, handleSubmit, reset } = useForm({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+    },
+  });
   const { errors } = formState;
 
   function onSubmit({ fullName, email, password }) {
-    signup({ fullName, email, password }, { onSettled: reset });
-    // console.log(fullName, email, password);
+    signup(
+      { fullName, email, password },
+      {
+        onSettled: reset({
+          fullName: "",
+          email: "",
+          password: "",
+          passwordConfirm: "",
+        }),
+      }
+    );
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit)} type="signup">
@@ -82,6 +105,7 @@ function SignupForm() {
         </Button>
         <Button disabled={isLoading}>Create new user</Button>
       </FormRow>
+      <SpinnerContainer>{isLoading && <Spinner />}</SpinnerContainer>
     </Form>
   );
 }

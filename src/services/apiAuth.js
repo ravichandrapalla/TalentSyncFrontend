@@ -16,8 +16,7 @@ export async function signup({ fullName, email, password }) {
     const { data } = response.data;
     return data;
   } catch (error) {
-    //error.response.data?.message ||
-    throw new Error(error.message);
+    throw new Error(error.response.data?.message || error.message);
   }
 }
 
@@ -26,9 +25,17 @@ export async function login({ email, password }) {
   // if (error) throw new Error(error.message);
   // //   console.log(data);
   // return data;
-  fetch(`${config.apiBaseUrl}`)
-    .then((data) => console.log(data))
-    .catch((err) => console.log(err));
+  try {
+    const response = await axios.post(`${config.apiBaseUrl}/get-user`, {
+      email,
+      password,
+    });
+    console.log("responseis ", response);
+    const { data } = response.data;
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
 }
 
 // export async function getCurrentUser() {

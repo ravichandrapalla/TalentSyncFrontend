@@ -21,6 +21,7 @@ const Form = styled.form`
     props.type === "signup" &&
     css`
       width: 48rem;
+      position: relative;
     `}
     
   overflow: hidden;
