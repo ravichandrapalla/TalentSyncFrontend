@@ -1,12 +1,22 @@
 import { useState } from "react";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
-
+import styled, { css } from "styled-components";
 import FormRowVertical from "../../ui/FormRowVertical";
 
 import useLogin from "./useLogin";
 import SpinnerMini from "./../../ui/SpinnerMini";
 import StyledInput from "../../ui/StyledInput";
+
+const RegisterLink = styled.a`
+  ${(props) =>
+    props.type === "registerlink" &&
+    css`
+      align-self: flex-end;
+    `}
+  font-size: 1rem;
+  color: green;
+`;
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -49,6 +59,12 @@ function LoginForm() {
           disabled={isLoading}
         />
       </FormRowVertical>
+      <FormRowVertical>
+        <RegisterLink type="registerlink" href="http://localhost:5173/register">
+          New user? Signup
+        </RegisterLink>
+      </FormRowVertical>
+
       <FormRowVertical>
         <Button size="large">{!isLoading ? "Login" : <SpinnerMini />}</Button>
       </FormRowVertical>

@@ -7,18 +7,17 @@ export async function signup({ fullName, email, password }) {
   // const { data, error } = await Promise.resolve("Signup complete");
   // if (error) throw new Error(error.message);
   // return data;
+
   try {
-    const response = await axios.post(`${config.apiBaseUrl}/signup`, {
-      fullName,
+    const response = await axios.post(`${config.apiBaseUrl}/create-user`, {
       email,
       password,
     });
     const { data } = response.data;
     return data;
   } catch (error) {
-    console.log("error is ", error.message);
-    toast.error(error.message);
-    throw new Error("Error signing up");
+    //error.response.data?.message ||
+    throw new Error(error.message);
   }
 }
 
