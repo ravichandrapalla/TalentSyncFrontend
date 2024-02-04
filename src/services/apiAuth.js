@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // import supabase, { supabaseUrl } from "./supabase";
-import toast from "react-hot-toast";
+
 import config from "../config";
 import axios from "axios";
 export async function signup({ fullName, email, password }) {
@@ -9,10 +9,11 @@ export async function signup({ fullName, email, password }) {
   // return data;
 
   try {
-    const response = await axios.post(`${config.apiBaseUrl}/create-user`, {
+    const response = await axios.post(`${config.apiBaseUrl}/signup`, {
       email,
       password,
     });
+    console.log("frontend respo", response);
     const { data } = response.data;
     return data;
   } catch (error) {
@@ -26,13 +27,14 @@ export async function login({ email, password }) {
   // //   console.log(data);
   // return data;
   try {
-    const response = await axios.post(`${config.apiBaseUrl}/get-user`, {
+    const response = await axios.post(`${config.apiBaseUrl}/login`, {
       email,
       password,
     });
     console.log("responseis ", response);
-    const { data } = response.data;
-    return data;
+    const { token, message } = response.data;
+    localStorage.setItem("token", token);
+    return message;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }
@@ -83,3 +85,23 @@ export async function login({ email, password }) {
 
 //   return updatedUser;
 // }
+
+export async function dashboard() {
+  // const { data, error } = await Promise.resolve("Logged in");
+  // if (error) throw new Error(error.message);
+  // //   console.log(data);
+  // return data;
+  try {
+    const response = await axios.get(`${config.apiBaseUrl}/dashboard`, {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+    console.log("responseis ", response);
+    const { message } = response.data;
+    console.log("protected", message);
+    // return message;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}

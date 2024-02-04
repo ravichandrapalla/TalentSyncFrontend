@@ -21,7 +21,10 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
-          <Route></Route>
+          <Route element={""}>
+            <Route index element={<Navigate replace to="dashboard" />} />
+          </Route>
+
           <Route path="login" element={<Login />} />
           <Route path="register" element={<SignUp />} />
           <Route path="*" element={<PageNotFound />} />

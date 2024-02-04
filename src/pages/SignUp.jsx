@@ -4,12 +4,20 @@ import styled from "styled-components";
 
 const SignUpLayout = styled.main`
   min-height: 100vh;
-  display: grid;
+  min-width: 100vw;
+  /* display: grid;
   grid-template-columns: 48rem;
   align-content: center;
   justify-content: center;
-  gap: 3.2rem;
+  gap: 3.2rem; */
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-grey-50);
+  row-gap: 3rem;
 `;
 export function SignUp() {
   return (

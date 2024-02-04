@@ -10,6 +10,7 @@ const Form = styled.form`
       background-color: var(--color-grey-0);
       border: 1px solid var(--color-grey-100);
       border-radius: var(--border-radius-md);
+      width: 50rem;
     `}
 
   ${(props) =>
@@ -21,7 +22,6 @@ const Form = styled.form`
     props.type === "signup" &&
     css`
       width: 48rem;
-      position: relative;
     `}
     
   overflow: hidden;
