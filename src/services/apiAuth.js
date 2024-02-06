@@ -10,11 +10,12 @@ export async function signup({ fullName, email, password }) {
 
   try {
     const response = await axios.post(`${config.apiBaseUrl}/signup`, {
+      fullName,
       email,
       password,
     });
     console.log("frontend respo", response);
-    const { data } = response.data;
+    const { data } = response;
     return data;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
@@ -22,22 +23,44 @@ export async function signup({ fullName, email, password }) {
 }
 
 export async function login({ email, password }) {
-  // const { data, error } = await Promise.resolve("Logged in");
-  // if (error) throw new Error(error.message);
-  // //   console.log(data);
-  // return data;
   try {
     const response = await axios.post(`${config.apiBaseUrl}/login`, {
       email,
       password,
     });
     console.log("responseis ", response);
-    const { token, message } = response.data;
-    localStorage.setItem("token", token);
+    const { message } = response.data;
+
+    const token = response.headers["authorization"].split(" ")[1];
+
+    // console.log("headers are", authorizationHeader);
+    sessionStorage.setItem("token", token);
     return message;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }
+}
+// const struser = JSON.stringify({ name: user.name, token: token });
+//getCurrentUser(token);
+export async function getCurrentUser() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.get(`${config.apiBaseUrl}/getCurrentUser`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("auth resp is ", response);
+    return response?.data?.message;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
+
+export async function logout() {
+  sessionStorage.removeItem("token");
 }
 
 // export async function getCurrentUser() {
@@ -86,22 +109,22 @@ export async function login({ email, password }) {
 //   return updatedUser;
 // }
 
-export async function dashboard() {
-  // const { data, error } = await Promise.resolve("Logged in");
-  // if (error) throw new Error(error.message);
-  // //   console.log(data);
-  // return data;
-  try {
-    const response = await axios.get(`${config.apiBaseUrl}/dashboard`, {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
-    console.log("responseis ", response);
-    const { message } = response.data;
-    console.log("protected", message);
-    // return message;
-  } catch (error) {
-    throw new Error(error.response.data?.message || error.message);
-  }
-}
+// export async function dashboard() {
+//   // const { data, error } = await Promise.resolve("Logged in");
+//   // if (error) throw new Error(error.message);
+//   // //   console.log(data);
+//   // return data;
+//   try {
+//     const response = await axios.get(`${config.apiBaseUrl}/dashboard`, {
+//       headers: {
+//         Authorization: localStorage.getItem("token"),
+//       },
+//     });
+//     console.log("responseis ", response);
+//     const { message } = response.data;
+//     console.log("protected", message);
+//     // return message;
+//   } catch (error) {
+//     throw new Error(error.response.data?.message || error.message);
+//   }
+// }

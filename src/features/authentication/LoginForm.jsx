@@ -3,10 +3,11 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import styled, { css } from "styled-components";
 import FormRowVertical from "../../ui/FormRowVertical";
-
+import toast from "react-hot-toast";
 import useLogin from "./useLogin";
 import SpinnerMini from "./../../ui/SpinnerMini";
 import StyledInput from "../../ui/StyledInput";
+import { useNavigate } from "react-router";
 
 const RegisterLink = styled.a`
   ${(props) =>
@@ -22,6 +23,7 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading } = useLogin();
+  const navigate = useNavigate();
   function handleSubmit(e) {
     e.preventDefault();
     if (!email || !password) return;
@@ -32,6 +34,11 @@ function LoginForm() {
         onSettled: () => {
           setEmail("");
           setPassword("");
+        },
+        onSuccess: () => {
+          toast.success("Successfully Logged In");
+          console.log("going to navigate");
+          navigate("/dashboard");
         },
       }
     );

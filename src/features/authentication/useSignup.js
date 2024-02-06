@@ -9,10 +9,8 @@ export function useSignup() {
   const navigate = useNavigate();
   const { mutate: signup, isLoading } = useMutation({
     mutationFn: signupApi,
-    onSuccess: () => {
-      toast.success(
-        "Account successfully created! Please verify the new account from the user's email address"
-      );
+    onSuccess: (data) => {
+      toast.success(data);
       navigate("/login");
     },
     onError: (error) => {

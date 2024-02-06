@@ -56,7 +56,7 @@ function SignupForm() {
   return (
     <>
       <Form onSubmit={handleSubmit(onSubmit)} type="signup">
-        <FormRow label="Full name" error={errors?.fullName?.message}>
+        <FormRow label="User name" error={errors?.fullName?.message}>
           <StyledInput
             type="text"
             id="fullName"
