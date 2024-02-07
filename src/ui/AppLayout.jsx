@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { useEffect } from "react";
+import UserContext from "../features/authentication/UserContext";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -14,6 +16,7 @@ const StyledAppLayout = styled.div`
 const Main = styled.main`
   background-color: var(--color-grey-50);
   padding: 4rem 4.8rem 6.4rem;
+
   overflow: scroll;
 `;
 
@@ -23,18 +26,20 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3.2rem;
+  background-color: red;
 `;
 
-function AppLayout() {
+function AppLayout({ userData }) {
+  useEffect(() => console.log("applayout", userData), []);
   return (
     <StyledAppLayout>
-      <Header />
-      <Sidebar />
-      <Main>
-        <Container>
+      <UserContext.Provider value={userData}>
+        <Header />
+        <Sidebar />
+        <Main>
           <Outlet />
-        </Container>
-      </Main>
+        </Main>
+      </UserContext.Provider>
     </StyledAppLayout>
   );
 }

@@ -13,7 +13,11 @@ export function useUser() {
 
   const storedToken = sessionStorage.getItem("token");
   if (!storedToken)
-    return { isAuthenticated: false, reason: "User Not Logged In" };
+    return {
+      isAuthenticated: false,
+      reason: "User Not Logged In",
+      userData: null,
+    };
 
   const decoadedTokenData = jwtDecode(storedToken);
   const currentTime = Date.now() / 1000;
@@ -22,14 +26,19 @@ export function useUser() {
   if (decoadedTokenData.exp < currentTime) {
     sessionStorage.removeItem("token");
 
-    return { isAuthenticated: false, reason: "Token Expired" };
+    return { isAuthenticated: false, reason: "Token Expired", userData: null };
   } else {
     console.log("decaded is ", decoadedTokenData);
   }
+
   // const userData = JSON.parse(storedData);
   // console.log("user details ", userData);
   // const user = userData?.token
   //   ? { token: userData.token, name: userData?.user?.name }
   //   : { token: "", name: "" };
-  return { isAuthenticated: true, reason: "" };
+  return {
+    isAuthenticated: true,
+    reason: "",
+    userData: decoadedTokenData,
+  };
 }

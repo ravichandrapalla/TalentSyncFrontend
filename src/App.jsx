@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import AppLayout from "./ui/AppLayout";
 import { useEffect } from "react";
+import AllUsers from "./pages/AllUsers";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,7 @@ function App() {
           >
             <Route index element={<Navigate replace to="dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="allUsers" element={<AllUsers />} />
           </Route>
 
           <Route path="login" element={<Login />} />

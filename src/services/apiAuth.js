@@ -14,7 +14,7 @@ export async function signup({ fullName, email, password }) {
       email,
       password,
     });
-    console.log("frontend respo", response);
+    console.log("signup resposne is", response);
     const { data } = response;
     return data;
   } catch (error) {
@@ -28,7 +28,7 @@ export async function login({ email, password }) {
       email,
       password,
     });
-    console.log("responseis ", response);
+    console.log("login response is ", response);
     const { message } = response.data;
 
     const token = response.headers["authorization"].split(" ")[1];
@@ -52,7 +52,7 @@ export async function getCurrentUser() {
       },
     });
 
-    console.log("auth resp is ", response);
+    console.log("current user is ", response);
     return response?.data?.message;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
@@ -61,6 +61,23 @@ export async function getCurrentUser() {
 
 export async function logout() {
   sessionStorage.removeItem("token");
+}
+
+export async function getAllUsers() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.get(`${config.apiBaseUrl}/getAllUsers`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("all users are ", response);
+    return response?.data?.users;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
 }
 
 // export async function getCurrentUser() {

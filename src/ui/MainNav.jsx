@@ -64,9 +64,9 @@ function MainNav() {
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/bookings">
+          <StyledNavLink to="/allUsers">
             <HiOutlineCalendarDays />
-            <span>Bookings</span>
+            <span>All Users</span>
           </StyledNavLink>
         </li>
         <li>

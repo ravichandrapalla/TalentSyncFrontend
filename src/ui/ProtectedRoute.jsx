@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useUser } from "../features/authentication/useUser";
 import Spinner from "./Spinner";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { cloneElement, useEffect } from "react";
 import toast from "react-hot-toast";
 
 const FullPage = styled.div`
@@ -18,7 +18,7 @@ const FullPage = styled.div`
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate();
   //1 . Load auth user
-  const { reason, isAuthenticated } = useUser();
+  const { reason, isAuthenticated, userData } = useUser();
 
   //2 . While loading show spinner
 
@@ -41,5 +41,5 @@ export default function ProtectedRoute({ children }) {
 
   //4 . if there is a user, render the app
 
-  if (isAuthenticated) return children;
+  if (isAuthenticated) return cloneElement(children, { userData });
 }
