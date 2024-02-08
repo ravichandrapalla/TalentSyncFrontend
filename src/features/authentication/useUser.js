@@ -1,44 +1,62 @@
-// import { useQuery } from "react-query";
-// import { getCurrentUser } from "../../services/apiAuth";
 import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+import axios from "axios";
+import { refreshToken } from "../../services/apiAuth";
 export function useUser() {
-  // const { isLoading, data: user } = useQuery({
-  //   queryKey: ["users"],
-  //   queryFn: getCurrentUser,
-  // });
-
-  // return { isLoading, user, isAuthenticated: user?.role === "authenticated" };
+  // const [isAuthentic, setIsAuthentic] = useState(false);
+  // const [userData, setUserData] = useState(null);
+  // const [reason, setReason] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
-  if (!storedToken)
+  if (!storedToken) {
     return {
-      isAuthenticated: false,
+      isAuthentic: false,
+      userData: {},
       reason: "User Not Logged In",
-      userData: null,
     };
+  }
 
   const decoadedTokenData = jwtDecode(storedToken);
   const currentTime = Date.now() / 1000;
-  console.log("brrrrr", decoadedTokenData, currentTime);
-
-  if (decoadedTokenData.exp < currentTime) {
-    sessionStorage.removeItem("token");
-
-    return { isAuthenticated: false, reason: "Token Expired", userData: null };
+  const timeToRefresh = decoadedTokenData.exp - currentTime - 60; // Refresh token 1 minute before expiry
+  console.log(
+    "Times -> ",
+    decoadedTokenData,
+    currentTime,
+    decoadedTokenData.exp > currentTime
+  );
+  console.log("dec  -->  ", timeToRefresh / 3600);
+  if (decoadedTokenData.exp - currentTime < 0) {
+    console.log("calling refresh ");
+    refreshToken().then((msg) =>
+      console.log("msg is ", msg).catch((err) => console.log(err))
+    );
   } else {
-    console.log("decaded is ", decoadedTokenData);
+    console.log("setting auth to true ");
+    return {
+      isAuthentic: true,
+      userData: decoadedTokenData,
+      reason: "",
+    };
   }
+  // if (currentTime > decoadedTokenData.exp) {
+  //   console.log("calling refresh ");
+  //   refreshToken().then((msg) =>
+  //     console.log("msg is ", msg).catch((err) => console.log(err))
+  //   );
+  // } else {
+  //   console.log("setting auth to true ");
+  //   return {
+  //     isAuthentic: true,
+  //     userData: decoadedTokenData,
+  //     reason: "",
+  //   };
+  // }
 
-  // const userData = JSON.parse(storedData);
-  // console.log("user details ", userData);
-  // const user = userData?.token
-  //   ? { token: userData.token, name: userData?.user?.name }
-  //   : { token: "", name: "" };
   return {
-    isAuthenticated: true,
-    reason: "",
+    isAuthentic: true,
     userData: decoadedTokenData,
+    reason: "",
   };
 }

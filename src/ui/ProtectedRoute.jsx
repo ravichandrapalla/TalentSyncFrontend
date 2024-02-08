@@ -18,12 +18,13 @@ const FullPage = styled.div`
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate();
   //1 . Load auth user
-  const { reason, isAuthenticated, userData } = useUser();
+  const { reason, isAuthentic: isAuthenticated, userData } = useUser();
 
   //2 . While loading show spinner
 
   useEffect(() => {
     if (!isAuthenticated) {
+      console.log("triggering login page beacuse auth is", isAuthenticated);
       navigate("/login");
     }
 

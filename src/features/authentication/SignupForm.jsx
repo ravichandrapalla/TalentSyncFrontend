@@ -27,6 +27,16 @@ const SpinnerContainer = styled.section`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
+const StyledSelect = styled.select`
+  background-color: grey;
+  border-radius: 1rem;
+  padding: 0.8rem;
+`;
+const StyledOption = styled.option`
+  background-color: yellow;
+  color: black;
+  padding: 0.5rem;
+`;
 
 function SignupForm() {
   const { signup, isLoading } = useSignup();
@@ -34,21 +44,25 @@ function SignupForm() {
     defaultValues: {
       fullName: "",
       email: "",
+      mobileNumber: "",
+      role: "",
       password: "",
       passwordConfirm: "",
     },
   });
   const { errors } = formState;
 
-  function onSubmit({ fullName, email, password }) {
+  function onSubmit({ fullName, email, password, mobileNumber, role }) {
     signup(
-      { fullName, email, password },
+      { fullName, email, password, mobileNumber, role },
       {
         onSettled: reset({
           fullName: "",
           email: "",
           password: "",
           passwordConfirm: "",
+          mobileNumber: "",
+          role: "",
         }),
       }
     );
@@ -78,6 +92,35 @@ function SignupForm() {
               },
             })}
           />
+        </FormRow>
+        <FormRow label="Mobile number" error={errors?.mobileNumber?.message}>
+          <StyledInput
+            type="tel" // Input type for mobile number
+            id="mobileNumber"
+            disabled={isLoading}
+            {...register("mobileNumber", {
+              required: "This field is required",
+              minLength: {
+                value: 10,
+                message: "Mobile Number Should be atleast 10 digits",
+              },
+            })}
+          />
+        </FormRow>
+
+        <FormRow label="Role" error={errors?.role?.message}>
+          <StyledSelect
+            type="text"
+            id="role"
+            disabled={isLoading}
+            {...register("role", {
+              required: "This field is required",
+            })}
+          >
+            <StyledOption value="">Select Role</StyledOption>
+            <StyledOption value="Recruiter">Recruiter</StyledOption>
+            <StyledOption value="Client">Client</StyledOption>
+          </StyledSelect>
         </FormRow>
 
         <FormRow

@@ -3,7 +3,13 @@
 
 import config from "../config";
 import axios from "axios";
-export async function signup({ fullName, email, password }) {
+export async function signup({
+  fullName,
+  email,
+  password,
+  mobileNumber,
+  role,
+}) {
   // const { data, error } = await Promise.resolve("Signup complete");
   // if (error) throw new Error(error.message);
   // return data;
@@ -13,6 +19,8 @@ export async function signup({ fullName, email, password }) {
       fullName,
       email,
       password,
+      mobileNumber,
+      role,
     });
     console.log("signup resposne is", response);
     const { data } = response;
@@ -32,12 +40,45 @@ export async function login({ email, password }) {
     const { message } = response.data;
 
     const token = response.headers["authorization"].split(" ")[1];
-
-    // console.log("headers are", authorizationHeader);
+    const refreshToken = response.headers["refreshtoken"];
+    // console.log("access token from header -> ", token);
+    // console.log("refresh token from header -> ", refreshToken);
     sessionStorage.setItem("token", token);
+    sessionStorage.setItem("refreshtoken", refreshToken);
+
     return message;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
+  }
+}
+export async function refreshToken() {
+  const token = sessionStorage.getItem("token");
+  const refreshToken = sessionStorage.getItem("refreshtoken");
+
+  if (!token)
+    throw new Error("Error in token Extaction while sending to backend");
+  try {
+    const response = await axios.post(
+      `${config.apiBaseUrl}/refreshToken`,
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("refresh api response - > ", response);
+    const { message } = response.data;
+    const newAccessToken = response.headers["authorization"].split(" ")[1];
+
+    // const newAccessToken = response.data.accessToken;
+    sessionStorage.setItem("token", newAccessToken);
+    return message;
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    throw new Error("Error in refreshing token");
   }
 }
 // const struser = JSON.stringify({ name: user.name, token: token });
@@ -61,6 +102,7 @@ export async function getCurrentUser() {
 
 export async function logout() {
   sessionStorage.removeItem("token");
+  sessionStorage.removeItem("refreshtoken");
 }
 
 export async function getAllUsers() {
@@ -69,7 +111,7 @@ export async function getAllUsers() {
   try {
     const response = await axios.get(`${config.apiBaseUrl}/getAllUsers`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     });
 
