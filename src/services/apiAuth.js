@@ -29,6 +29,25 @@ export async function signup({
     throw new Error(error.response.data?.message || error.message);
   }
 }
+export async function uploadResume(formData, regId) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.post(
+      `${config.apiBaseUrl}/uploadResume/:${regId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message || error);
+  }
+}
 
 export async function login({ email, password }) {
   try {

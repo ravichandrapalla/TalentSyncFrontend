@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllUsers } from "../services/apiAuth";
+import { getAllUsers, uploadResume } from "../services/apiAuth";
 import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
 import DefaultProfileImage from "../images/default-user.jpg";
@@ -121,11 +121,17 @@ const StyledRegNo = styled.p`
 export default function AllUsers() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const handleUpload = (e, regId) => {
+    let formData = new FormData();
+    console.log("e-> ", e);
+    formData.append("resume", e.target.files[0]);
+    console.log("e2-> ", e.target.files[0]);
+    console.log("e3-> ", formData, typeof formData);
+    uploadResume(formData, regId)
+      .then((resp) => console.log("api resp -> ", resp))
+      .catch((err) => console.log(err));
+  };
   useEffect(() => {
-    // getCurrentUser()
-    //   .then((data) => setData(data))
-    //   .catch((err) => toast.error(err));
-
     getAllUsers()
       .then((users) => {
         setData(users);
@@ -159,7 +165,12 @@ export default function AllUsers() {
               </ProfileDeatilsContainer>
             </ProfileContainer>
             <ButtonContainer>
-              <StyledButton type="Resume">View Resume</StyledButton>
+              <input
+                type="file"
+                name="resume"
+                placeholder="Upload a file"
+                onChange={(e) => handleUpload(e, user.registration_number)}
+              />
               <StyledButton type="Resume">View Resume</StyledButton>
               <StyledButton type="Resume">View Resume</StyledButton>
             </ButtonContainer>
