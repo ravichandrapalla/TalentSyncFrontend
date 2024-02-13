@@ -34,7 +34,7 @@ export async function uploadResume(formData, regId) {
   if (!token) throw new Error("Error in token Verification");
   try {
     const response = await axios.post(
-      `${config.apiBaseUrl}/uploadResume/:${regId}`,
+      `${config.apiBaseUrl}/uploadResume/${regId}`,
       formData,
       {
         headers: {
