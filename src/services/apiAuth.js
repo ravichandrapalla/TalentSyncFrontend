@@ -119,6 +119,20 @@ export async function getCurrentUser() {
   }
 }
 
+export async function jobMatches(searchText) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    let response = await axios.get(`${config.apiBaseUrl}/getJobMatches`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
+
 export async function logout() {
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("refreshtoken");
