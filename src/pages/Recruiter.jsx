@@ -40,11 +40,17 @@ const SearchSuggestionsItem = styled.li`
   padding: 0.5rem;
   cursor: pointer;
 `;
+const ClientArticle = styled.article`
+  height: 200px;
+  width: 600px;
+`;
 
 export default function Recruiter() {
   const [searchText, setSearchText] = useState("");
   const [resumeSearch, setResumeSearch] = useState(false);
   const [foundResults, setFoundResults] = useState([]);
+  const [ValidClients, setValidClients] = useState([]);
+
   useEffect(() => {
     if (searchText && !resumeSearch) {
       jobMatches(searchText)
@@ -59,13 +65,18 @@ export default function Recruiter() {
 
   useEffect(() => {
     getMatchedResumes(searchText)
-      .then((resumes) => console.log(resumes))
+      .then((users) => setValidClients(users))
       .catch((err) => console.log(err));
   }, [resumeSearch]);
 
   const handleExactSearch = (suggestion) => {
     setSearchText(suggestion);
     setResumeSearch(true);
+  };
+  const handleResumeDownload = (buffer) => {
+    const blob = new Blob([buffer], { type: "application/pdf" });
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, "_blank");
   };
   return (
     <StyledSection>
@@ -88,6 +99,16 @@ export default function Recruiter() {
           </SearchSuggestions>
         )}
       </SearchSection>
+      {ValidClients?.map((client) => (
+        <ClientArticle key={client.email}>
+          <p>{client.username}</p>
+          <p>{client.email}</p>
+          <p>{client.mobile_number}</p>
+          <button onClick={() => handleResumeDownload(client.resume.data)}>
+            Download Resume
+          </button>
+        </ClientArticle>
+      ))}
     </StyledSection>
   );
 }

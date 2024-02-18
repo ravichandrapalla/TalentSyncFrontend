@@ -152,8 +152,9 @@ export async function getMatchedResumes(searchText) {
         searchText: searchText,
       },
     });
-    const { message, resumeBuffer } = response.data;
-    console.log("resume biffer ---> ", resumeBuffer);
+    const { message, clients: users } = response.data;
+    console.log("returned users ---> ", users);
+    return users;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }
