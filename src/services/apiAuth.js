@@ -3,6 +3,7 @@
 
 import config from "../config";
 import axios from "axios";
+
 export async function signup({
   fullName,
   email,
@@ -120,14 +121,39 @@ export async function getCurrentUser() {
 }
 
 export async function jobMatches(searchText) {
+  console.log(`calling api wil search text '${searchText}'`);
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
     let response = await axios.get(`${config.apiBaseUrl}/getJobMatches`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
+      },
+      params: {
+        searchText: searchText,
       },
     });
+    const { message, result } = response.data;
+    console.log("api message is  ", message);
+    return result;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
+export async function getMatchedResumes(searchText) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    let response = await axios.get(`${config.apiBaseUrl}/getMatchedResumes`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+      params: {
+        searchText: searchText,
+      },
+    });
+    const { message, resumeBuffer } = response.data;
+    console.log("resume biffer ---> ", resumeBuffer);
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }

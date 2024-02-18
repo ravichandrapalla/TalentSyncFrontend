@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { jobMatches } from "../services/apiAuth";
+import { getMatchedResumes, jobMatches } from "../services/apiAuth";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -38,27 +38,50 @@ const SearchSuggestionsItem = styled.li`
   /* border-radius: 0.5rem; */
   border-bottom: 2px solid black;
   padding: 0.5rem;
+  cursor: pointer;
 `;
 
 export default function Recruiter() {
   const [searchText, setSearchText] = useState("");
+  const [resumeSearch, setResumeSearch] = useState(false);
   const [foundResults, setFoundResults] = useState([]);
   useEffect(() => {
-    jobMatches(searchText)
-      .then((resp) => console.log("resp ---->", resp))
-      .catch((err) => err);
+    if (searchText && !resumeSearch) {
+      jobMatches(searchText)
+        .then((results) => {
+          setFoundResults(results);
+        })
+        .catch((err) => err);
+    } else {
+      setFoundResults([]);
+    }
   }, [searchText]);
+
+  useEffect(() => {
+    getMatchedResumes(searchText)
+      .then((resumes) => console.log(resumes))
+      .catch((err) => console.log(err));
+  }, [resumeSearch]);
+
+  const handleExactSearch = (suggestion) => {
+    setSearchText(suggestion);
+    setResumeSearch(true);
+  };
   return (
     <StyledSection>
       <SearchSection>
         <StyledInput
           type="text"
           onChange={(e) => setSearchText(e.target.value)}
+          value={searchText}
         />
         {foundResults.length > 0 && (
           <SearchSuggestions>
             {foundResults.map((suggestion) => (
-              <SearchSuggestionsItem key={suggestion}>
+              <SearchSuggestionsItem
+                key={suggestion}
+                onClick={() => handleExactSearch(suggestion)}
+              >
                 {suggestion}
               </SearchSuggestionsItem>
             ))}
