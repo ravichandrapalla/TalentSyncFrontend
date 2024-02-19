@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getMatchedResumes, jobMatches } from "../services/apiAuth";
+import { saveAs } from "file-saver";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -73,10 +74,12 @@ export default function Recruiter() {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
-  const handleResumeDownload = (buffer) => {
-    const blob = new Blob([buffer], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
-    window.open(url, "_blank");
+  const handleResumeDownload = (b64str) => {
+    console.log("base64", b64str);
+    const binaryData = atob(b64str);
+    const blob = new Blob([binaryData], { type: "application/pdf" });
+    // Use FileSaver to trigger a file download
+    saveAs(blob, "resume.pdf");
   };
   return (
     <StyledSection>
@@ -104,9 +107,16 @@ export default function Recruiter() {
           <p>{client.username}</p>
           <p>{client.email}</p>
           <p>{client.mobile_number}</p>
-          <button onClick={() => handleResumeDownload(client.resume.data)}>
+          {/* <button onClick={() => handleResumeDownload(client.resume)}>
             Download Resume
-          </button>
+          </button> */}
+          {/* <embed src={`data:application/pdf;base64,${client.resume}`} /> */}
+          <a
+            href={`data:application/pdf;base64,${client.resume}`}
+            download="download.pdf"
+          >
+            Download Resume
+          </a>
         </ClientArticle>
       ))}
     </StyledSection>
