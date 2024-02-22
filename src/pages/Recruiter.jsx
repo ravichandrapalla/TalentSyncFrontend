@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getMatchedResumes, jobMatches } from "../services/apiAuth";
-import { saveAs } from "file-saver";
+import { useDebounce } from "../hooks/useDebounce";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -11,20 +11,28 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
   margin: auto;
+  border-radius: 4px;
 `;
 const SearchSection = styled.section`
   /* display: flex;
   flex-direction: column; */
-  padding: 0.5rem;
+  padding: 1rem 2rem;
   position: relative;
-  width: 30rem;
+  width: 100%;
   /* background-color: red; */
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+  background-color: #070f2b;
 `;
 const StyledInput = styled.input`
   display: absolute;
+  width: 30%;
+  border-radius: 2rem;
+  border: none;
+  outline: none;
+  padding: 0.5rem 1.2rem;
+
   /* background-color: green; */
 `;
 const SearchSuggestions = styled.ul`
@@ -33,6 +41,8 @@ const SearchSuggestions = styled.ul`
   /* background-color: yellow; */
   padding: 0%.5rem;
   transition: 0.5s;
+  background-color: #9290c3;
+  border-radius: 0 0 1rem 1rem;
 `;
 const SearchSuggestionsItem = styled.li`
   outline: none;
@@ -40,10 +50,39 @@ const SearchSuggestionsItem = styled.li`
   border-bottom: 2px solid black;
   padding: 0.5rem;
   cursor: pointer;
+  color: #fff;
 `;
 const ClientArticle = styled.article`
-  height: 200px;
-  width: 600px;
+  height: 30%;
+  width: 80%;
+  background-color: green;
+  margin: 2rem auto;
+  color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  display: flex;
+  column-gap: 4rem;
+`;
+const UserDetails = styled.section`
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  width: 50%;
+  max-width: 50%;
+`;
+const DownloadableContainer = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+
+  justify-content: center;
+  align-items: flex-end;
+`;
+const DownloadResume = styled.a`
+  padding: 1rem;
+  background-color: black;
+  border-radius: 1rem;
+  cursor: pointer;
 `;
 
 export default function Recruiter() {
@@ -53,15 +92,21 @@ export default function Recruiter() {
   const [ValidClients, setValidClients] = useState([]);
 
   useEffect(() => {
+    let timeOutId;
     if (searchText && !resumeSearch) {
-      jobMatches(searchText)
-        .then((results) => {
-          setFoundResults(results);
-        })
-        .catch((err) => err);
+      timeOutId = setTimeout(() => {
+        jobMatches(searchText)
+          .then((results) => {
+            setFoundResults(results);
+          })
+          .catch((err) => err);
+      }, 2000);
     } else {
       setFoundResults([]);
     }
+    return () => {
+      clearTimeout(timeOutId);
+    };
   }, [searchText]);
 
   useEffect(() => {
@@ -74,13 +119,13 @@ export default function Recruiter() {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
-  const handleResumeDownload = (b64str) => {
-    console.log("base64", b64str);
-    const binaryData = atob(b64str);
-    const blob = new Blob([binaryData], { type: "application/pdf" });
-    // Use FileSaver to trigger a file download
-    saveAs(blob, "resume.pdf");
-  };
+  // const handleResumeDownload = (b64str) => {
+  //   console.log("base64", b64str);
+  //   const binaryData = atob(b64str);
+  //   const blob = new Blob([binaryData], { type: "application/pdf" });
+  //   // Use FileSaver to trigger a file download
+  //   saveAs(blob, "resume.pdf");
+  // };
   return (
     <StyledSection>
       <SearchSection>
@@ -88,6 +133,7 @@ export default function Recruiter() {
           type="text"
           onChange={(e) => setSearchText(e.target.value)}
           value={searchText}
+          placeholder="Search with Skills"
         />
         {foundResults.length > 0 && (
           <SearchSuggestions>
@@ -104,19 +150,21 @@ export default function Recruiter() {
       </SearchSection>
       {ValidClients?.map((client) => (
         <ClientArticle key={client.email}>
-          <p>{client.username}</p>
-          <p>{client.email}</p>
-          <p>{client.mobile_number}</p>
-          {/* <button onClick={() => handleResumeDownload(client.resume)}>
-            Download Resume
-          </button> */}
+          <UserDetails>
+            <p>{`Name : ${client.username}`}</p>
+            <p>{`Email : ${client.email}`}</p>
+            <p>{`Mobile : ${client.mobile_number}`}</p>
+          </UserDetails>
+
           {/* <embed src={`data:application/pdf;base64,${client.resume}`} /> */}
-          <a
-            href={`data:application/pdf;base64,${client.resume}`}
-            download="download.pdf"
-          >
-            Download Resume
-          </a>
+          <DownloadableContainer>
+            <DownloadResume
+              href={`data:application/pdf;base64,${client.resume}`}
+              download="download.pdf"
+            >
+              Download Resume
+            </DownloadResume>
+          </DownloadableContainer>
         </ClientArticle>
       ))}
     </StyledSection>
