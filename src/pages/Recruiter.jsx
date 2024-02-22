@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getMatchedResumes, jobMatches } from "../services/apiAuth";
-import { useDebounce } from "../hooks/useDebounce";
+// import { useDebounce } from "../hooks/useDebounce";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -52,6 +52,10 @@ const SearchSuggestionsItem = styled.li`
   cursor: pointer;
   color: #fff;
 `;
+const NoResult = styled.li`
+  color: red;
+  padding: 0.5rem;
+`;
 const ClientArticle = styled.article`
   height: 30%;
   width: 80%;
@@ -93,11 +97,14 @@ export default function Recruiter() {
 
   useEffect(() => {
     let timeOutId;
+    console.log("useEffect ---> searching for suggestion");
     if (searchText && !resumeSearch) {
+      console.log("useEffect ---> suggestion api calling");
       timeOutId = setTimeout(() => {
         jobMatches(searchText)
           .then((results) => {
             setFoundResults(results);
+            setResumeSearch(false);
           })
           .catch((err) => err);
       }, 2000);
@@ -110,22 +117,23 @@ export default function Recruiter() {
   }, [searchText]);
 
   useEffect(() => {
-    getMatchedResumes(searchText)
-      .then((users) => setValidClients(users))
-      .catch((err) => console.log(err));
+    console.log("useEffect ---> getting resumes");
+    if (resumeSearch) {
+      console.log("useEffect ---> getting resumes --> api called");
+      getMatchedResumes(searchText)
+        .then((users) => {
+          setValidClients(users);
+          setResumeSearch(false);
+        })
+        .catch((err) => console.log(err));
+    }
   }, [resumeSearch]);
 
   const handleExactSearch = (suggestion) => {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
-  // const handleResumeDownload = (b64str) => {
-  //   console.log("base64", b64str);
-  //   const binaryData = atob(b64str);
-  //   const blob = new Blob([binaryData], { type: "application/pdf" });
-  //   // Use FileSaver to trigger a file download
-  //   saveAs(blob, "resume.pdf");
-  // };
+
   return (
     <StyledSection>
       <SearchSection>
@@ -135,7 +143,7 @@ export default function Recruiter() {
           value={searchText}
           placeholder="Search with Skills"
         />
-        {foundResults.length > 0 && (
+        {searchText && foundResults?.length > 0 && (
           <SearchSuggestions>
             {foundResults.map((suggestion) => (
               <SearchSuggestionsItem

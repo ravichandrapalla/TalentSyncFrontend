@@ -7,6 +7,8 @@ import {
   HiOutlineHomeModern,
   HiOutlineUsers,
 } from "react-icons/hi2";
+import { useContext } from "react";
+import UserContext from "../features/authentication/UserContext";
 
 const NavList = styled.ul`
   display: flex;
@@ -54,6 +56,7 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 function MainNav() {
+  const userData = useContext(UserContext);
   return (
     <nav>
       <NavList>
@@ -66,19 +69,21 @@ function MainNav() {
         <li>
           <StyledNavLink to="/allUsers">
             <HiOutlineCalendarDays />
-            <span>All Users</span>
+            <span>{`All Users`}</span>
           </StyledNavLink>
         </li>
         <li>
           <StyledNavLink to="/recruiter">
             <HiOutlineHomeModern />
-            <span>Recruiters</span>
+            <span>{`Recruiters ${
+              userData?.role === "Recruiter" && "(You)"
+            }`}</span>
           </StyledNavLink>
         </li>
         <li>
           <StyledNavLink to="/users">
             <HiOutlineUsers />
-            <span>Clients</span>
+            <span>{`Clients ${userData?.role_id === "Client" && You} `}</span>
           </StyledNavLink>
         </li>
         <li>

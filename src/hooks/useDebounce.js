@@ -8,7 +8,7 @@ export function useDebounce({ fn = null, delay = null }) {
     let timeOutId;
     const callApi = async () => {
       try {
-        let resp = await fn;
+        let resp = await fn();
       } catch (error) {
         throw new Error(error);
       }

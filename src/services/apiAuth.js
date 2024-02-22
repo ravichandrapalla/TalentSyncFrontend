@@ -59,7 +59,7 @@ export async function login({ email, password }) {
     console.log("login response is ", response);
     const { message } = response.data;
 
-    const token = response.headers["authorization"].split(" ")[1];
+    const token = response.headers["authorization"];
     const refreshToken = response.headers["refreshtoken"];
     // console.log("access token from header -> ", token);
     // console.log("refresh token from header -> ", refreshToken);
@@ -85,19 +85,18 @@ export async function refreshToken() {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       }
     );
     console.log("refresh api response - > ", response);
     const { message } = response.data;
-    const newAccessToken = response.headers["authorization"].split(" ")[1];
+    const newAccessToken = response.headers["authorization"];
 
     // const newAccessToken = response.data.accessToken;
     sessionStorage.setItem("token", newAccessToken);
     return message;
   } catch (error) {
-    console.error("Error refreshing token:", error);
     throw new Error("Error in refreshing token");
   }
 }
@@ -109,7 +108,7 @@ export async function getCurrentUser() {
   try {
     const response = await axios.get(`${config.apiBaseUrl}/getCurrentUser`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
       },
     });
 
@@ -121,7 +120,6 @@ export async function getCurrentUser() {
 }
 
 export async function jobMatches(searchText) {
-  console.log(`calling api wil search text '${searchText}'`);
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
@@ -171,7 +169,7 @@ export async function getAllUsers() {
   try {
     const response = await axios.get(`${config.apiBaseUrl}/getAllUsers`, {
       headers: {
-        Authorization: token,
+        Authorization: `${token}`,
       },
     });
 
