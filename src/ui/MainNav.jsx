@@ -7,6 +7,11 @@ import {
   HiOutlineHomeModern,
   HiOutlineUsers,
 } from "react-icons/hi2";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { BiFileFind } from "react-icons/bi";
+import { IoColorFilterOutline } from "react-icons/io5";
+
 import { useContext } from "react";
 import UserContext from "../features/authentication/UserContext";
 
@@ -62,28 +67,34 @@ function MainNav() {
       <NavList>
         <li>
           <StyledNavLink to="/dashboard">
-            <HiOutlineHome />
+            {/* <HiOutlineHome /> */}
+            <LuLayoutDashboard />
             <span>Dashboard</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/allUsers">
-            <HiOutlineCalendarDays />
-            <span>{`All Users`}</span>
-          </StyledNavLink>
-        </li>
-        <li>
           <StyledNavLink to="/recruiter">
-            <HiOutlineHomeModern />
-            <span>{`Recruiters ${
-              userData?.role === "Recruiter" && "(You)"
+            {/* <HiOutlineHomeModern /> */}
+            <MdOutlinePeopleAlt />
+            <span>{`Recruiters    ${
+              userData?.role === "Recruiter" ? "(You)" : ""
             }`}</span>
           </StyledNavLink>
         </li>
+
         <li>
-          <StyledNavLink to="/users">
-            <HiOutlineUsers />
-            <span>{`Clients ${userData?.role_id === "Client" && You} `}</span>
+          <StyledNavLink to="/clients">
+            {/* <HiOutlineUsers /> */}
+            <BiFileFind />
+            <span>{`Clients ${
+              userData?.role_id === "Client" ? "(You)" : ""
+            } `}</span>
+          </StyledNavLink>
+        </li>
+        <li>
+          <StyledNavLink to="/unclassified">
+            <IoColorFilterOutline />
+            <span>{`Unclassified`}</span>
           </StyledNavLink>
         </li>
         <li>

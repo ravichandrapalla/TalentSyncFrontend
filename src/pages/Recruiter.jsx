@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { getMatchedResumes, jobMatches } from "../services/apiAuth";
+import {
+  getMatchedResumes,
+  getRecruiters,
+  jobMatches,
+} from "../services/apiAuth";
+import UserContext from "../features/authentication/UserContext";
 // import { useDebounce } from "../hooks/useDebounce";
 
 const StyledSection = styled.section`
@@ -88,12 +93,33 @@ const DownloadResume = styled.a`
   border-radius: 1rem;
   cursor: pointer;
 `;
+const SpinnerBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: transparent;
+  background-color: rgba(219, 214, 217, 0.2);
+  backdrop-filter: blur(5px);
+`;
+
+const SpinnerContainer = styled.section`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+import Spinner from "../ui/Spinner";
 
 export default function Recruiter() {
   const [searchText, setSearchText] = useState("");
   const [resumeSearch, setResumeSearch] = useState(false);
   const [foundResults, setFoundResults] = useState([]);
   const [ValidClients, setValidClients] = useState([]);
+  const [recruiters, setRecruiters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const userData = useContext(UserContext);
 
   useEffect(() => {
     let timeOutId;
@@ -128,13 +154,50 @@ export default function Recruiter() {
         .catch((err) => console.log(err));
     }
   }, [resumeSearch]);
+  useEffect(() => {
+    console.log("use ris ----> ", userData.role);
+    if (userData?.role === "Admin") {
+      setLoading(true);
+      getRecruiters()
+        .then((data) => {
+          console.log("api data us ", data);
+          if (data.length > 0) {
+            setRecruiters(data);
+            console.log("setting recruiters-----> ,", data);
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, []);
 
   const handleExactSearch = (suggestion) => {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
 
-  return (
+  return loading ? (
+    <SpinnerBackground>
+      <SpinnerContainer>
+        <Spinner />
+      </SpinnerContainer>
+    </SpinnerBackground>
+  ) : userData.role === "Admin" ? (
+    <>
+      <StyledSection>
+        {recruiters.map((rec) => (
+          <div key={rec.email}>
+            <p>{rec.email}</p>
+            <p>{rec.role}</p>
+          </div>
+        ))}
+      </StyledSection>
+    </>
+  ) : (
     <StyledSection>
       <SearchSection>
         <StyledInput

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import LogoIcon from "../images/Logo.png";
 import { useContext } from "react";
 import UserContext from "../features/authentication/UserContext";
+
 const StyledLogo = styled.div`
   text-align: center;
 `;

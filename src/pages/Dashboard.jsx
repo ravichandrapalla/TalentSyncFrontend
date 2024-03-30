@@ -32,5 +32,5 @@ const StyledSection = styled.section`
 `;
 
 export default function Dashboard() {
-  return <h1>Your Dashboard</h1>;
+  return <div>....</div>;
 }

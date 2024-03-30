@@ -157,6 +157,22 @@ export async function getMatchedResumes(searchText) {
     throw new Error(error.response.data?.message || error.message);
   }
 }
+export async function getRecruiters() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    let response = await axios.get(`${config.apiBaseUrl}/getRecruiters`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    const { message, recruiters } = response.data;
+    console.log("-----> recruiters", recruiters, message);
+    return recruiters;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
 
 export async function logout() {
   sessionStorage.removeItem("token");

@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Navigate,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import PageNotFound from "./pages/PageNotFound";
 import Login from "./pages/Login";
@@ -16,9 +10,11 @@ import { SignUp } from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import AppLayout from "./ui/AppLayout";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import AllUsers from "./pages/AllUsers";
 import Recruiter from "./pages/Recruiter";
+// Supports weights 100-900
+import "@fontsource-variable/outfit";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,7 +43,7 @@ function App() {
           >
             <Route index element={<Navigate replace to="dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="allUsers" element={<AllUsers />} />
+            <Route path="unclassified" element={<AllUsers />} />
             <Route path="recruiter" element={<Recruiter />} />
           </Route>
 
