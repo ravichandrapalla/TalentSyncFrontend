@@ -1,15 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  getMatchedResumes,
-  getRecruiters,
-  jobMatches,
-} from "../services/apiAuth";
+import { getClients, getMatchedResumes, jobMatches } from "../services/apiAuth";
 import UserContext from "../features/authentication/UserContext";
 // import defaultUser from "../images/default-user.jpg";
 // import { useDebounce } from "../hooks/useDebounce";
-import { FaUserTie } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import Spinner from "../ui/Spinner";
 import store, { setTab } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -119,7 +115,7 @@ const SpinnerContainer = styled.section`
 `;
 
 const CardContainer = styled.div`
-  background-color: orange;
+  background-color: #07fbeb;
   border-radius: 2rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 2em;
@@ -139,7 +135,7 @@ const Avatar = styled.div`
   width: 5em;
   height: 5em;
   border-radius: 50%;
-  background-color: #52b788; /* Green color, you can change it */
+  background-color: #4826f4; /* Green color, you can change it */
   color: #ffffff;
   font-size: 24px;
 `;
@@ -173,71 +169,66 @@ const DetailsContainer = styled.article`
   white-space: nowrap;
   overflow: hidden;
 `;
-const SectionHeader = styled.h2`
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
 
-export default function Recruiter() {
+export default function Client() {
   const [searchText, setSearchText] = useState("");
   const [resumeSearch, setResumeSearch] = useState(false);
   const [foundResults, setFoundResults] = useState([]);
   const [ValidClients, setValidClients] = useState([]);
-  const [recruiters, setRecruiters] = useState([]);
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const userData = useContext(UserContext);
   const storeData = useSelector((state) => state);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(setTab("Recruiter"));
+  useState(() => {
+    dispatch(setTab("Client"));
     console.log(store.getState());
   }, []);
 
-  // useEffect(() => {
-  //   let timeOutId;
-  //   console.log("useEffect ---> searching for suggestion");
-  //   if (searchText && !resumeSearch) {
-  //     console.log("useEffect ---> suggestion api calling");
-  //     timeOutId = setTimeout(() => {
-  //       jobMatches(searchText)
-  //         .then((results) => {
-  //           setFoundResults(results);
-  //           setResumeSearch(false);
-  //         })
-  //         .catch((err) => err);
-  //     }, 2000);
-  //   } else {
-  //     setFoundResults([]);
-  //   }
-  //   return () => {
-  //     clearTimeout(timeOutId);
-  //   };
-  // }, [searchText]);
+  useEffect(() => {
+    let timeOutId;
+    console.log("useEffect ---> searching for suggestion");
+    if (searchText && !resumeSearch) {
+      console.log("useEffect ---> suggestion api calling");
+      timeOutId = setTimeout(() => {
+        jobMatches(searchText)
+          .then((results) => {
+            setFoundResults(results);
+            setResumeSearch(false);
+          })
+          .catch((err) => err);
+      }, 2000);
+    } else {
+      setFoundResults([]);
+    }
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [searchText]);
 
-  // useEffect(() => {
-  //   console.log("useEffect ---> getting resumes");
-  //   if (resumeSearch) {
-  //     console.log("useEffect ---> getting resumes --> api called");
-  //     getMatchedResumes(searchText)
-  //       .then((users) => {
-  //         setValidClients(users);
-  //         setResumeSearch(false);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // }, [resumeSearch]);
+  useEffect(() => {
+    console.log("useEffect ---> getting resumes");
+    if (resumeSearch) {
+      console.log("useEffect ---> getting resumes --> api called");
+      getMatchedResumes(searchText)
+        .then((users) => {
+          setValidClients(users);
+          setResumeSearch(false);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [resumeSearch]);
   useEffect(() => {
     console.log("use ris ----> ", userData.role);
     if (userData?.role === "Admin") {
       setLoading(true);
-      getRecruiters()
+      getClients()
         .then((data) => {
           console.log("api data us ", data);
           if (data.length > 0) {
-            setRecruiters(data);
-            console.log("setting recruiters-----> ,", data);
+            setClients(data);
+            console.log("setting clients-----> ,", data);
           }
         })
         .catch((err) => {
@@ -253,54 +244,39 @@ export default function Recruiter() {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
-  const RecruiterCard = ({ recruiter }) => {
+  const ClientCard = ({ client }) => {
     return (
       <CardContainer>
         <Avatar>
-          {recruiter.image ? (
-            <img src={recruiter.image} alt="Recruiter" />
+          {client.image ? (
+            <img src={client.image} alt="Client" />
           ) : (
-            <FaUserTie size={80} />
+            <FaUser size={80} />
           )}
         </Avatar>
         <InfoContainer>
           {/* <SectionHeader>Personal Information</SectionHeader> */}
           <DetailsContainer>
             <Label>Registration Number:</Label>
-            <Value>{recruiter.registration_number}</Value>
+            <Value>{client.registration_number}</Value>
           </DetailsContainer>
           <DetailsContainer>
             <Label>Username:</Label>
-            <Value>{recruiter.username}</Value>
+            <Value>{client.username}</Value>
           </DetailsContainer>
           <DetailsContainer>
             <Label>Organization:</Label>
-            <Value>{recruiter.organization || "Unknown Organization"}</Value>
+            <Value>{client.organization || "Unknown Organization"}</Value>
           </DetailsContainer>
           <DetailsContainer>
             <Label>Mobile Number:</Label>
-            <Value>{recruiter.mobile_number}</Value>
+            <Value>{client.mobile_number}</Value>
           </DetailsContainer>
           <DetailsContainer>
             <Label>Email:</Label>
-            <Value>{recruiter.email}</Value>
+            <Value>{client.email}</Value>
           </DetailsContainer>
         </InfoContainer>
-        {/* <InfoContainer>
-          
-          <DetailsContainer>
-            <Label>Organization:</Label>
-            <Value>{recruiter.organization || "Unknown Organization"}</Value>
-          </DetailsContainer>
-          <DetailsContainer>
-            <Label>Mobile Number:</Label>
-            <Value>{recruiter.mobile_number}</Value>
-          </DetailsContainer>
-          <DetailsContainer>
-            <Label>Email:</Label>
-            <Value>{recruiter.email}</Value>
-          </DetailsContainer>
-        </InfoContainer> */}
       </CardContainer>
     );
   };
@@ -314,11 +290,8 @@ export default function Recruiter() {
   ) : userData.role === "Admin" ? (
     <>
       <StyledSection>
-        {recruiters.map((recruiter) => (
-          <RecruiterCard
-            key={recruiter.registration_number}
-            recruiter={recruiter}
-          />
+        {clients.map((client) => (
+          <ClientCard key={client.registration_number} client={client} />
         ))}
       </StyledSection>
     </>

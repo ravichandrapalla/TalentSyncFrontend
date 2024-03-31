@@ -8,6 +8,7 @@ import UserContext from "../features/authentication/UserContext";
 // import { DarkModeToggle } from "./DarkModeToggle";
 import defaultAvatar from "../images/default-user.jpg";
 import SearchBox from "./SearchBox";
+import { useSelector } from "react-redux";
 
 const StyledHeaderContainer = styled.header`
   width: 100%;
@@ -16,6 +17,7 @@ const StyledHeaderContainer = styled.header`
   align-items: center;
 `;
 const StyledLegend = styled.div`
+  min-width: 10em;
   font-size: x-large;
   font-weight: 600;
   font-family: "Outfit Variable", sans-serif;
@@ -44,18 +46,22 @@ const Avatar = styled.img`
 export function HeaderMenu() {
   const userData = useContext(UserContext);
   const navigate = useNavigate();
+  const storeData = useSelector((state) => state);
+  useEffect(() => {
+    console.log("current page is -------->", storeData.tabSlice.tab);
+  }, [storeData.tabSlice]);
   useEffect(() => console.log("Header menu context data", userData), []);
   return (
     <StyledHeaderContainer>
       <StyledLegend>
-        <p>Dashboard</p>
+        <p>{storeData.tabSlice.tab}</p>
       </StyledLegend>
       <SearchBox />
 
       <StyledHeaderMenu>
         <Avatar src={defaultAvatar} alt={`Avatar of `} />
         <li>
-          <Mail>{userData.storedEmail}</Mail>
+          <Mail>{userData?.storedEmail}</Mail>
         </li>
         <li>
           <ButtonIcon onClick={() => navigate("/account")}>

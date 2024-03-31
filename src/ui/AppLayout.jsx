@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Outlet } from "react-router-dom";
 
 import styled from "styled-components";
@@ -5,6 +6,8 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useEffect } from "react";
 import UserContext from "../features/authentication/UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import store from "../redux/store";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -30,7 +33,13 @@ const Container = styled.div`
 `;
 
 function AppLayout({ userData }) {
-  useEffect(() => console.log("applayout", userData), []);
+  const activetab = useSelector((state) => state);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log(store.getState());
+  }, []);
+
+  useEffect(() => console.log("applayout", userData, activetab), []);
   return (
     <StyledAppLayout>
       <UserContext.Provider value={userData}>

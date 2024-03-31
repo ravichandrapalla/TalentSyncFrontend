@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { getAllUsers, getCurrentUser } from "../services/apiAuth";
 import toast from "react-hot-toast";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import store, { setTab } from "../redux/store";
 
 const StyledArticle = styled.article`
   width: 200px;
@@ -32,5 +34,12 @@ const StyledSection = styled.section`
 `;
 
 export default function Dashboard() {
+  const storeData = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setTab("Dashboard"));
+    console.log(store.getState());
+  }, []);
   return <div>....</div>;
 }

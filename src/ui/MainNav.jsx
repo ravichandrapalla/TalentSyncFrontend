@@ -12,8 +12,9 @@ import { MdOutlinePeopleAlt } from "react-icons/md";
 import { BiFileFind } from "react-icons/bi";
 import { IoColorFilterOutline } from "react-icons/io5";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import UserContext from "../features/authentication/UserContext";
+import { useSelector } from "react-redux";
 
 const NavList = styled.ul`
   display: flex;
@@ -62,6 +63,10 @@ const StyledNavLink = styled(NavLink)`
 
 function MainNav() {
   const userData = useContext(UserContext);
+  const storeData = useSelector((state) => state);
+  useEffect(() => {
+    console.log("current page is -------->", storeData.tabSlice.tab);
+  }, [storeData.tabSlice]);
   return (
     <nav>
       <NavList>

@@ -15,6 +15,10 @@ import AllUsers from "./pages/AllUsers";
 import Recruiter from "./pages/Recruiter";
 // Supports weights 100-900
 import "@fontsource-variable/outfit";
+import Client from "./pages/Client";
+import Unclassified from "./pages/Unclassified";
+import store from "./redux/store";
+import { Provider } from "react-redux";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,15 +40,18 @@ function App() {
         <Routes>
           <Route
             element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
+              <Provider store={store}>
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              </Provider>
             }
           >
             <Route index element={<Navigate replace to="dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="unclassified" element={<AllUsers />} />
+            <Route path="unclassified" element={<Unclassified />} />
             <Route path="recruiter" element={<Recruiter />} />
+            <Route path="clients" element={<Client />} />
           </Route>
 
           <Route path="login" element={<Login />} />

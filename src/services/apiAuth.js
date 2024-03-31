@@ -173,6 +173,22 @@ export async function getRecruiters() {
     throw new Error(error.response.data?.message || error.message);
   }
 }
+export async function getClients() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    let response = await axios.get(`${config.apiBaseUrl}/getClients`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    const { message, clients } = response.data;
+    console.log("-----> recruiters", clients, message);
+    return clients;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
 
 export async function logout() {
   sessionStorage.removeItem("token");
@@ -191,6 +207,31 @@ export async function getAllUsers() {
 
     console.log("all users are ", response);
     return response?.data?.users;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
+
+export async function approveUser(regNumber) {
+  console.log("payload ----> ", regNumber);
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.post(
+      `${config.apiBaseUrl}/approveUser`,
+      {
+        regNumber: regNumber,
+      },
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    console.log("all users are ", response);
+    return response?.data?.message;
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }
