@@ -1,6 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useContext } from "react";
-import { approveUser, getAllUsers, uploadResume } from "../services/apiAuth";
+import {
+  approveUser,
+  getAllUsers,
+  rejectUser,
+  uploadResume,
+} from "../services/apiAuth";
 import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
 import DefaultProfileImage from "../images/default-user.jpg";
@@ -209,11 +214,30 @@ export default function Unclassified() {
   const userData = useContext(UserContext);
   const dispatch = useDispatch();
   const handleApprove = (regNumber) => {
-    console.log("handler ---- > ", regNumber);
     setLoading(true);
     approveUser(regNumber)
       .then((message) => {
         toast.success(message);
+
+        getAllUsers()
+          .then((users) => {
+            setData(users);
+            setLoading(!loading);
+          })
+          .catch((err) => toast.error(err))
+          .finally(() => {
+            setLoading(false);
+          });
+      })
+      .catch((err) => toast.error(err))
+      .finally(() => setLoading(false));
+  };
+  const handleReject = (regNumber) => {
+    setLoading(true);
+    rejectUser(regNumber)
+      .then((message) => {
+        console.log("response4 message", message);
+        // toast.success(message);
 
         getAllUsers()
           .then((users) => {
@@ -256,7 +280,9 @@ export default function Unclassified() {
             <ButtonNew onClick={() => handleApprove(user.registration_number)}>
               Approve
             </ButtonNew>
-            <ButtonNew onClick={"handleReject"}>Reject</ButtonNew>
+            <ButtonNew onClick={() => handleReject(user.registration_number)}>
+              Reject
+            </ButtonNew>
             <ButtonNew onClick={"handleEdit"}>Edit</ButtonNew>
           </ButtonContainer>
         </CardContent>

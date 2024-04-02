@@ -213,12 +213,37 @@ export async function getAllUsers() {
 }
 
 export async function approveUser(regNumber) {
-  console.log("payload ----> ", regNumber);
+  // console.log("payload ----> ", regNumber);
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
     const response = await axios.post(
       `${config.apiBaseUrl}/approveUser`,
+      {
+        regNumber: regNumber,
+      },
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    console.log("all users are ", response);
+    return response?.data?.message;
+  } catch (error) {
+    throw new Error(error.response.data?.message || error.message);
+  }
+}
+
+export async function rejectUser(regNumber) {
+  console.log("payload ----> ", regNumber);
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.post(
+      `${config.apiBaseUrl}/rejectUser`,
       {
         regNumber: regNumber,
       },
