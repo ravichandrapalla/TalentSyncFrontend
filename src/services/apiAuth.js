@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 // import supabase, { supabaseUrl } from "./supabase";
 
+import toast from "react-hot-toast";
 import config from "../config";
 import axios from "axios";
 
@@ -166,9 +167,14 @@ export async function getRecruiters() {
         Authorization: `${token}`,
       },
     });
+
     const { message, recruiters } = response.data;
+    console.log("msg   =----> ", response);
+    // if (response.status === 404) {
+    //   return { message: "No data Found", recruiters: null };
+    // }
     console.log("-----> recruiters", recruiters, message);
-    return recruiters;
+    return { message, recruiters };
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }
@@ -182,9 +188,12 @@ export async function getClients() {
         Authorization: `${token}`,
       },
     });
+    if (response.status === 404) {
+      return { message: "No data Found", clients: null };
+    }
     const { message, clients } = response.data;
-    console.log("-----> recruiters", clients, message);
-    return clients;
+    console.log("-----> clients", clients, message);
+    return { message, clients };
   } catch (error) {
     throw new Error(error.response.data?.message || error.message);
   }
@@ -199,16 +208,18 @@ export async function getAllUsers() {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.get(`${config.apiBaseUrl}/getAllUsers`, {
+    let response = await axios.get(`${config.apiBaseUrl}/getAllUsers`, {
       headers: {
         Authorization: `${token}`,
       },
     });
 
     console.log("all users are ", response);
-    return response?.data?.users;
+    const { message, users } = response.data;
+
+    return { message, users };
   } catch (error) {
-    throw new Error(error.response.data?.message || error.message);
+    return error.message;
   }
 }
 

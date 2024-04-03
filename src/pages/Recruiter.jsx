@@ -13,6 +13,8 @@ import { FaUserTie } from "react-icons/fa";
 import Spinner from "../ui/Spinner";
 import store, { setTab } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { TbMoodEmpty } from "react-icons/tb";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -178,6 +180,13 @@ const SectionHeader = styled.h2`
   font-weight: bold;
   margin-bottom: 10px;
 `;
+const NoDataMessageModel = styled.article`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default function Recruiter() {
   const [searchText, setSearchText] = useState("");
@@ -233,15 +242,17 @@ export default function Recruiter() {
     if (userData?.role === "Admin") {
       setLoading(true);
       getRecruiters()
-        .then((data) => {
-          console.log("api data us ", data);
-          if (data.length > 0) {
-            setRecruiters(data);
-            console.log("setting recruiters-----> ,", data);
+        .then(({ message, recruiters }) => {
+          if (recruiters.length > 0) {
+            setRecruiters(recruiters);
+            toast.success(`Found ${recruiters.length} Recruiters`);
+          } else {
+            setRecruiters([]);
+            toast.error(message);
           }
         })
         .catch((err) => {
-          throw new Error(err);
+          console.log(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -311,6 +322,11 @@ export default function Recruiter() {
         <Spinner />
       </SpinnerContainer>
     </SpinnerBackground>
+  ) : recruiters.length === 0 ? (
+    <NoDataMessageModel>
+      <TbMoodEmpty size={100} color="tomato" />
+      <p>Oops!.. No data Found</p>
+    </NoDataMessageModel>
   ) : userData.role === "Admin" ? (
     <>
       <StyledSection>

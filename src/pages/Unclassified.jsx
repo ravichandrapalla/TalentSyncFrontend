@@ -15,6 +15,7 @@ import UserContext from "../features/authentication/UserContext";
 import { RiFileUserFill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { setTab } from "../redux/store";
+import MyModal from "../ui/MyModal";
 
 const SpinnerBackground = styled.div`
   position: absolute;
@@ -175,7 +176,7 @@ const UserRole = styled.span`
   margin-top: 5px;
 `;
 
-const UserCreatedAt = styled.span`
+const UserEmail = styled.span`
   margin-top: 5px;
 `;
 
@@ -194,7 +195,20 @@ const ButtonNew = styled.button`
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: ${(props) => {
+    switch (props.type) {
+      case "view":
+        return "#007bff";
+      case "approve":
+        return "#58A399";
+      case "reject":
+        return "#E72929";
+      case "edit":
+        return "#B3C8CF";
+      default:
+        return "brown";
+    }
+  }};
   color: #fff;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -211,8 +225,29 @@ const ImageCumDetailContainer = styled.div`
 export default function Unclassified() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
   const userData = useContext(UserContext);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setTab("Unclassified"));
+    setLoading(true);
+    getAllUsers()
+      .then(({ message, users }) => {
+        if (users && users.length === 0) {
+          setData([]);
+          toast.error("No Data Found");
+        } else {
+          setData(users);
+          toast.success(`Found ${users.length} Users`);
+        }
+      })
+      .catch((err) => console.log(err.message))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
   const handleApprove = (regNumber) => {
     setLoading(true);
     approveUser(regNumber)
@@ -220,11 +255,16 @@ export default function Unclassified() {
         toast.success(message);
 
         getAllUsers()
-          .then((users) => {
-            setData(users);
-            setLoading(!loading);
+          .then(({ message, users }) => {
+            if (users?.length === 0) {
+              setData([]);
+              toast.error("No Data Found");
+            } else {
+              setData(users);
+              toast.success(`Found ${users.length} Users`);
+            }
           })
-          .catch((err) => toast.error(err))
+          .catch((err) => toast.error(err.message))
           .finally(() => {
             setLoading(false);
           });
@@ -237,57 +277,24 @@ export default function Unclassified() {
     rejectUser(regNumber)
       .then((message) => {
         console.log("response4 message", message);
-        // toast.success(message);
 
         getAllUsers()
-          .then((users) => {
-            setData(users);
-            setLoading(!loading);
+          .then(({ message, users }) => {
+            if (users?.length === 0) {
+              setData([]);
+              toast.error("No Data Found");
+            } else {
+              setData(users);
+              toast.success(`Found ${users.length} Users`);
+            }
           })
-          .catch((err) => toast.error(err))
+          .catch((err) => toast.error(err.message))
           .finally(() => {
             setLoading(false);
           });
       })
       .catch((err) => toast.error(err))
       .finally(() => setLoading(false));
-  };
-
-  const UserCard = ({ user }) => {
-    return (
-      <Card>
-        <CardContent>
-          <ImageCumDetailContainer>
-            <RiFileUserFill size={100} />
-            <UserInfo>
-              <UserName>{user.username}</UserName>
-              <UserOrganization>
-                Organization: {user.organization || "Null"}
-              </UserOrganization>
-              <UserRegistrationNumber>
-                Registration Number: {user.registration_number}
-              </UserRegistrationNumber>
-              <UserRole>Requested Role: {user.role}</UserRole>
-              <UserCreatedAt>Created At: {user.created_at}</UserCreatedAt>
-              <UserVerified>
-                Verified: {user.verified ? "Yes" : "No"}
-              </UserVerified>
-            </UserInfo>
-          </ImageCumDetailContainer>
-
-          <ButtonContainer>
-            <ButtonNew onClick={"View"}>View</ButtonNew>
-            <ButtonNew onClick={() => handleApprove(user.registration_number)}>
-              Approve
-            </ButtonNew>
-            <ButtonNew onClick={() => handleReject(user.registration_number)}>
-              Reject
-            </ButtonNew>
-            <ButtonNew onClick={"handleEdit"}>Edit</ButtonNew>
-          </ButtonContainer>
-        </CardContent>
-      </Card>
-    );
   };
 
   const handleUpload = (e, regId) => {
@@ -300,15 +307,65 @@ export default function Unclassified() {
       .then((resp) => console.log("api resp -> ", resp))
       .catch((err) => console.log(err));
   };
+  const handleView = (regId) => {
+    setIsOpen(!isOpen);
+  };
   useEffect(() => {
-    dispatch(setTab("Unclassified"));
-    getAllUsers()
-      .then((users) => {
-        setData(users);
-        setLoading(!loading);
-      })
-      .catch((err) => toast.error(err));
-  }, []);
+    console.log("opened ----> ", isOpen);
+  }, [isOpen]);
+
+  const UserCard = ({ user }) => {
+    return (
+      <Card>
+        <CardContent>
+          <ImageCumDetailContainer>
+            <RiFileUserFill size={100} />
+            <UserInfo>
+              <UserName>{user.username}</UserName>
+              <UserRegistrationNumber>
+                Registration Number: {user.registration_number}
+              </UserRegistrationNumber>
+              <UserOrganization>
+                Organization: {user.organization || "Null"}
+              </UserOrganization>
+              <UserEmail>Email: {user.email}</UserEmail>
+              <UserRole>Requested Role: {user.role}</UserRole>
+              <UserVerified>
+                Verified: {user.verified ? "Yes" : "No"}
+              </UserVerified>
+            </UserInfo>
+          </ImageCumDetailContainer>
+
+          <ButtonContainer>
+            <ButtonNew
+              onClick={() => {
+                setSelectedUser(user);
+                handleView(user.registration_number);
+              }}
+              type="view"
+            >
+              More
+            </ButtonNew>
+            <ButtonNew
+              onClick={() => handleApprove(user.registration_number)}
+              type="approve"
+            >
+              Approve
+            </ButtonNew>
+            <ButtonNew
+              onClick={() => handleReject(user.registration_number)}
+              type="reject"
+            >
+              Reject
+            </ButtonNew>
+            <ButtonNew onClick={"handleEdit"} type="edit">
+              Edit
+            </ButtonNew>
+          </ButtonContainer>
+        </CardContent>
+      </Card>
+    );
+  };
   return loading ? (
     <SpinnerBackground>
       <SpinnerContainer>
@@ -317,14 +374,8 @@ export default function Unclassified() {
     </SpinnerBackground>
   ) : userData.role === "Admin" ? (
     <StyledSection>
+      {<MyModal isOpen={isOpen} onClose={handleView} user={selectedUser} />}
       {data?.map((user) => (
-        //user.username
-        //user.organization
-        //user.registration_number
-        //user.approval_status
-        //user.created_at
-        //user.verified
-        //code here please
         <UserCard user={user} key={user.registration_number} />
       ))}
     </StyledSection>

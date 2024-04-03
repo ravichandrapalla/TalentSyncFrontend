@@ -9,6 +9,8 @@ import { FaUser } from "react-icons/fa";
 import Spinner from "../ui/Spinner";
 import store, { setTab } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { TbMoodEmpty } from "react-icons/tb";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -169,6 +171,13 @@ const DetailsContainer = styled.article`
   white-space: nowrap;
   overflow: hidden;
 `;
+const NoDataMessageModel = styled.article`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default function Client() {
   const [searchText, setSearchText] = useState("");
@@ -216,7 +225,7 @@ export default function Client() {
           setValidClients(users);
           setResumeSearch(false);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => toast.error(err.message));
     }
   }, [resumeSearch]);
   useEffect(() => {
@@ -224,15 +233,18 @@ export default function Client() {
     if (userData?.role === "Admin") {
       setLoading(true);
       getClients()
-        .then((data) => {
-          console.log("api data us ", data);
-          if (data.length > 0) {
-            setClients(data);
-            console.log("setting clients-----> ,", data);
+        .then(({ message, clients }) => {
+          // console.log("raw response ", response);
+          if (clients.length > 0) {
+            setClients(clients);
+            toast.success(`Found ${clients.length} Clients`);
+          } else {
+            setClients([]);
+            toast.error(message);
           }
         })
         .catch((err) => {
-          throw new Error(err);
+          console.log(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -287,6 +299,11 @@ export default function Client() {
         <Spinner />
       </SpinnerContainer>
     </SpinnerBackground>
+  ) : clients.length === 0 ? (
+    <NoDataMessageModel>
+      <TbMoodEmpty size={100} color="tomato" />
+      <p>Oops!.. No data Found</p>
+    </NoDataMessageModel>
   ) : userData.role === "Admin" ? (
     <>
       <StyledSection>
