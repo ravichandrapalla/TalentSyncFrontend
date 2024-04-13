@@ -314,7 +314,12 @@ export default function Unclassified() {
   const handleView = (regId) => {
     setIsOpen(!isOpen);
   };
-  const handleEdit = () => {
+  const handleEdit = (user) => {
+    if (selectedUser.username) {
+      setSelectedUser({});
+    } else {
+      setSelectedUser(user);
+    }
     setEditModalVisible((visible) => !visible);
   };
   useEffect(() => {
@@ -367,13 +372,7 @@ export default function Unclassified() {
             </ButtonNew>
             <ButtonNew
               onClick={() => {
-                if (!user.username) {
-                  setSelectedUser(user);
-                } else {
-                  setSelectedUser({});
-                }
-
-                handleEdit(user.registration_number);
+                handleEdit(user);
               }}
               type="edit"
             >
