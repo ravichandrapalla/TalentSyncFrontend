@@ -273,6 +273,27 @@ export async function rejectUser(regNumber) {
   }
 }
 
+export async function editUser(payload) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.post(
+      `${config.apiBaseUrl}/editUser`,
+      payload,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      return response.message;
+    }
+  } catch (error) {
+    return error.message;
+  }
+}
+
 // export async function getCurrentUser() {
 //   const { data: session } = await supabase.auth.getSession();
 //   if (!session.session) return null;

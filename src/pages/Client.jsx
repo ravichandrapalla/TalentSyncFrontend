@@ -11,6 +11,7 @@ import store, { setTab } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { TbMoodEmpty } from "react-icons/tb";
+import SpinnerComponent from "../ui/SpinnerComponent";
 
 const StyledSection = styled.section`
   min-height: 100%;
@@ -294,11 +295,7 @@ export default function Client() {
   };
 
   return loading ? (
-    <SpinnerBackground>
-      <SpinnerContainer>
-        <Spinner />
-      </SpinnerContainer>
-    </SpinnerBackground>
+    <SpinnerComponent />
   ) : clients.length === 0 ? (
     <NoDataMessageModel>
       <TbMoodEmpty size={100} color="tomato" />

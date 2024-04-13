@@ -10,30 +10,33 @@ import toast from "react-hot-toast";
 import styled, { css } from "styled-components";
 import DefaultProfileImage from "../images/default-user.jpg";
 import Button from "../ui/Button";
-import Spinner from "./../ui/Spinner";
+// import Spinner from "./../ui/Spinner";
 import UserContext from "../features/authentication/UserContext";
 import { RiFileUserFill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { setTab } from "../redux/store";
 import MyModal from "../ui/MyModal";
+import SpinnerComponent from "../ui/SpinnerComponent";
+import EditModal from "../ui/EditModal";
+import EditForm from "../components/EditForm";
 
-const SpinnerBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background: transparent;
-  background-color: rgba(219, 214, 217, 0.2);
-  backdrop-filter: blur(5px);
-`;
+// const SpinnerBackground = styled.div`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   height: 100%;
+//   width: 100%;
+//   background: transparent;
+//   background-color: rgba(219, 214, 217, 0.2);
+//   backdrop-filter: blur(5px);
+// `;
 
-const SpinnerContainer = styled.section`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
+// const SpinnerContainer = styled.section`
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+// `;
 
 // const StyledSection = styled.section`
 //   min-height: 100%;
@@ -227,6 +230,7 @@ export default function Unclassified() {
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const userData = useContext(UserContext);
   const dispatch = useDispatch();
 
@@ -310,6 +314,9 @@ export default function Unclassified() {
   const handleView = (regId) => {
     setIsOpen(!isOpen);
   };
+  const handleEdit = () => {
+    setEditModalVisible((visible) => !visible);
+  };
   useEffect(() => {
     console.log("opened ----> ", isOpen);
   }, [isOpen]);
@@ -358,7 +365,18 @@ export default function Unclassified() {
             >
               Reject
             </ButtonNew>
-            <ButtonNew onClick={"handleEdit"} type="edit">
+            <ButtonNew
+              onClick={() => {
+                if (!user.username) {
+                  setSelectedUser(user);
+                } else {
+                  setSelectedUser({});
+                }
+
+                handleEdit(user.registration_number);
+              }}
+              type="edit"
+            >
               Edit
             </ButtonNew>
           </ButtonContainer>
@@ -367,14 +385,17 @@ export default function Unclassified() {
     );
   };
   return loading ? (
-    <SpinnerBackground>
-      <SpinnerContainer>
-        <Spinner />
-      </SpinnerContainer>
-    </SpinnerBackground>
+    <SpinnerComponent />
   ) : userData.role === "Admin" ? (
     <StyledSection>
       {<MyModal isOpen={isOpen} onClose={handleView} user={selectedUser} />}
+      {
+        <EditForm
+          isOpen={editModalVisible}
+          onClose={() => handleEdit()}
+          user={selectedUser}
+        />
+      }
       {data?.map((user) => (
         <UserCard user={user} key={user.registration_number} />
       ))}

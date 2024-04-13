@@ -46,8 +46,8 @@ const ModalBackground = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   background: transparent;
   background-color: rgba(219, 214, 217, 0.2);
   backdrop-filter: blur(5px);
@@ -59,8 +59,8 @@ const ModalContainer = styled.section`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #feca1f;
-  width: 32%;
-  height: 26%;
+  width: 45%;
+  height: 45%;
   border-radius: 1.5rem;
   padding: 1rem 4rem;
   display: flex;
@@ -69,6 +69,7 @@ const ModalContainer = styled.section`
   margin: 1rem;
   justify-content: space-around;
   text-align: center;
+  overflow: hidden;
 `;
 const UserDetailsContainer = styled.section`
   display: flex;
