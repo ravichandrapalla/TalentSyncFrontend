@@ -273,12 +273,12 @@ export async function rejectUser(regNumber) {
   }
 }
 
-export async function editUser(payload) {
+export async function editUser({ regId, payload }) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
     const response = await axios.post(
-      `${config.apiBaseUrl}/editUser`,
+      `${config.apiBaseUrl}/editUser/${regId}`,
       payload,
       {
         headers: {
@@ -287,7 +287,8 @@ export async function editUser(payload) {
       }
     );
     if (response.status === 200) {
-      return response.message;
+      const { message, updatedRecord } = response.data;
+      return { message, updatedRecord };
     }
   } catch (error) {
     return error.message;

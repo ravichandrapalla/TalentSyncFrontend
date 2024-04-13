@@ -325,6 +325,22 @@ export default function Unclassified() {
   useEffect(() => {
     console.log("opened ----> ", isOpen);
   }, [isOpen]);
+  const updateLocalData = (message, updatedTarget) => {
+    const updatedLocalData = data.map((user) => {
+      if (user.registration_number === updatedTarget[0].registration_number) {
+        return updatedTarget[0];
+      } else {
+        return user;
+      }
+    });
+    console.log(
+      "updated map data is ------>",
+      updatedLocalData,
+      "taregt is ",
+      updatedTarget
+    );
+    setData(updatedLocalData);
+  };
 
   const UserCard = ({ user }) => {
     return (
@@ -393,6 +409,9 @@ export default function Unclassified() {
           isOpen={editModalVisible}
           onClose={() => handleEdit()}
           user={selectedUser}
+          updateLocalData={({ message, updatedRecord }) =>
+            updateLocalData(message, updatedRecord)
+          }
         />
       }
       {data?.map((user) => (

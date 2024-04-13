@@ -6,11 +6,11 @@ export default function useUpdateUser() {
   const { mutate: updateUser, isLoading } = useMutation({
     mutationFn: editUserApi,
 
-    onSuccess: (data) => {
-      return data;
+    onSuccess: ({ message, updatedRecord }) => {
+      return { message, updatedRecord };
     },
     onError: (err) => {
-      toast.error(err);
+      return err;
     },
   });
   return { updateUser, isLoading };

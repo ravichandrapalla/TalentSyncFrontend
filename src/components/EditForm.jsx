@@ -7,8 +7,9 @@ import FormRow from "../ui/FormRow";
 import StyledInput from "../ui/StyledInput";
 import { useForm } from "react-hook-form";
 import Form from "../ui/Form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../ui/Button";
+import toast from "react-hot-toast";
 
 const ModalDescription = styled.p`
   font-size: 3rem;
@@ -80,8 +81,9 @@ const StyledOption = styled.option`
 //   padding: 0.5rem;
 // `;
 
-export default function EditForm({ isOpen, onClose, user }) {
+export default function EditForm({ isOpen, onClose, user, updateLocalData }) {
   console.log(" finallly theuser is ", user);
+  const [userDetails, setUserDetails] = useState({});
   const { updateUser, isLoading } = useUpdateUser();
   const { register, formState, getValues, handleSubmit, reset, setValue } =
     useForm({
@@ -90,13 +92,33 @@ export default function EditForm({ isOpen, onClose, user }) {
         role: "",
       },
     });
-  const handleUpdateUser = () => {
-    console.log("new values are ");
+  const handleUpdateUser = ({ organization, role }) => {
+    const regId = user.registration_number;
+    console.log("pasing data is ", regId, organization, role);
+    const payload = {
+      organization,
+      role,
+    };
+
+    updateUser(
+      { regId, payload },
+      {
+        onSuccess: ({ message, updatedRecord }) => {
+          toast.success(message || "Data Updated");
+          updateLocalData({ message, updatedRecord });
+          onClose();
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      }
+    );
   };
   useEffect(() => {
     setValue("organization", user.organization || "No data");
     console.log("mountine time user data", user);
     setValue("role", user.role);
+    setUserDetails(user);
   }, [isOpen]);
 
   console.log("data is --->", getValues());
@@ -137,7 +159,9 @@ export default function EditForm({ isOpen, onClose, user }) {
             </FormRow>
             <FormRow>
               <Button onClick={onClose}>Cancel</Button>
-              <Button onClick={reset}>Proceed</Button>
+              <Button onClick={reset} type="submit">
+                Proceed
+              </Button>
             </FormRow>
           </Form>
         </ModalContainer>
