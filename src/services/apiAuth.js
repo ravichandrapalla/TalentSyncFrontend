@@ -295,6 +295,27 @@ export async function editUser({ regId, payload }) {
   }
 }
 
+export async function dashBoard({ registration_number: regId }) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.get(
+      `${config.apiBaseUrl}/dashboard/${regId}`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      const { message, records } = response.data;
+      return { message, records };
+    }
+  } catch (error) {
+    return error.message;
+  }
+}
+
 // export async function getCurrentUser() {
 //   const { data: session } = await supabase.auth.getSession();
 //   if (!session.session) return null;
