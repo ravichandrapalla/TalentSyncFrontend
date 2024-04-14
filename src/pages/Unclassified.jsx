@@ -48,15 +48,16 @@ import EditForm from "../components/EditForm";
 //   margin: auto;
 // `;
 const StyledSection = styled.section`
-  min-height: 100%;
-  max-width: 90%;
+  height: 100%;
+  width: 90%;
   /* background-color: grey; */
   overflow: hidden;
   display: flex;
+  row-gap: 2.5rem;
   flex-direction: column;
-  padding: 2rem;
-  margin: auto;
-  border-radius: 4px;
+  /* padding: 2rem;
+  margin: auto; */
+  border-radius: 1rem;
 `;
 const StyledArticle = styled.article`
   display: flex;
