@@ -14,15 +14,16 @@ import { TbMoodEmpty } from "react-icons/tb";
 import SpinnerComponent from "../ui/SpinnerComponent";
 
 const StyledSection = styled.section`
-  min-height: 100%;
-  max-width: 90%;
+  height: 100%;
+  width: 90%;
   /* background-color: grey; */
   overflow: auto;
   display: flex;
+  row-gap: 2.5rem;
   flex-direction: column;
-  padding: 2rem;
-  margin: auto;
-  border-radius: 4px;
+  /* padding: 2rem;
+  margin: auto; */
+  border-radius: 1rem;
 `;
 const SearchSection = styled.section`
   /* display: flex;
@@ -118,41 +119,49 @@ const SpinnerContainer = styled.section`
 `;
 
 const CardContainer = styled.div`
-  background-color: #07fbeb;
-  border-radius: 2rem;
+  background-color: orange;
+  border-radius: inherit;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 2em;
-  margin-bottom: 1em;
+  padding: 1.5em;
+
   display: flex;
+  width: 100%;
   justify-content: space-between;
+  align-items: normal;
   align-content: flex-start;
   overflow: hidden;
-  gap: 1rem;
-  /* flex-wrap: wrap; */
+  column-gap: 1.5rem;
+  flex-wrap: wrap;
+`;
+const AvatarContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 20%;
+  height: 100%;
+  /* background-color: pink; */
 `;
 
 const Avatar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 5em;
-  height: 5em;
-  border-radius: 50%;
+  border-radius: 100%;
   background-color: #4826f4; /* Green color, you can change it */
   color: #ffffff;
-  font-size: 24px;
+  padding: 1.5rem;
 `;
 
 const InfoContainer = styled.div`
   display: flex;
+  justify-content: space-around;
+  column-gap: 1.5rem;
+  width: 70%;
+  flex: 1;
 `;
 
 const Label = styled.p`
-  /* margin-bottom: 5px; */
   font-size: larger;
   font-weight: 600;
   font-family: "Outfit Variable", sans-serif;
-  padding: 0%.5;
+  padding: 0.5%;
 `;
 
 const Value = styled.p`
@@ -163,14 +172,14 @@ const Value = styled.p`
 `;
 const DetailsContainer = styled.article`
   padding: 0.5%;
-  /* border: 1px solid grey; */
-  min-width: 14em;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   white-space: nowrap;
   overflow: hidden;
+  flex: 1;
 `;
 const NoDataMessageModel = styled.article`
   display: flex;
@@ -260,13 +269,16 @@ export default function Client() {
   const ClientCard = ({ client }) => {
     return (
       <CardContainer>
-        <Avatar>
-          {client.image ? (
-            <img src={client.image} alt="Client" />
-          ) : (
-            <FaUser size={80} />
-          )}
-        </Avatar>
+        <AvatarContainer>
+          <Avatar>
+            {client.image ? (
+              <img src={client.image} alt="Client" />
+            ) : (
+              <FaUser size={80} />
+            )}
+          </Avatar>
+        </AvatarContainer>
+
         <InfoContainer>
           {/* <SectionHeader>Personal Information</SectionHeader> */}
           <DetailsContainer>
