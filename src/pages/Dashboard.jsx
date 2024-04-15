@@ -56,7 +56,7 @@ const Card = styled.div`
   text-align: center;
 `;
 const Parameter = styled.span`
-  font-size: 3.5rem;
+  font-size: 2rem;
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
 `;

@@ -51,7 +51,7 @@ const StyledSection = styled.section`
   height: 100%;
   width: 90%;
   /* background-color: grey; */
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   row-gap: 2.5rem;
   flex-direction: column;
@@ -200,17 +200,30 @@ const ButtonNew = styled.button`
   border: none;
   border-radius: 5px;
   background-color: ${(props) => {
-    switch (props.type) {
-      case "view":
-        return "#007bff";
-      case "approve":
-        return "#58A399";
-      case "reject":
-        return "#E72929";
-      case "edit":
-        return "#B3C8CF";
-      default:
-        return "brown";
+    if (props.verified) {
+      switch (props.type) {
+        case "view":
+          return "#007bff";
+        case "approve":
+          return "#58A399";
+        case "reject":
+          return "#E72929";
+        case "edit":
+          return "#B3C8CF";
+        default:
+          return "brown";
+      }
+    } else {
+      switch (props.type) {
+        case "view":
+          return "#007bff";
+        case "reject":
+          return "#E72929";
+        case "edit":
+          return "#B3C8CF";
+        default:
+          return "grey";
+      }
     }
   }};
   color: #fff;
@@ -360,7 +373,7 @@ export default function Unclassified() {
               <UserEmail>Email: {user.email}</UserEmail>
               <UserRole>Requested Role: {user.role}</UserRole>
               <UserVerified>
-                Verified: {user.verified ? "Yes" : "No"}
+                Mail Verified: {user.verified ? "Yes" : "No"}
               </UserVerified>
             </UserInfo>
           </ImageCumDetailContainer>
@@ -372,18 +385,23 @@ export default function Unclassified() {
                 handleView(user.registration_number);
               }}
               type="view"
+              verified={user.verified}
             >
               More
             </ButtonNew>
+
             <ButtonNew
               onClick={() => handleApprove(user.registration_number)}
               type="approve"
+              verified={user.verified}
+              disabled={!user.verified}
             >
               Approve
             </ButtonNew>
             <ButtonNew
               onClick={() => handleReject(user.registration_number)}
               type="reject"
+              verified={user.verified}
             >
               Reject
             </ButtonNew>
@@ -392,6 +410,7 @@ export default function Unclassified() {
                 handleEdit(user);
               }}
               type="edit"
+              verified={user.verified}
             >
               Edit
             </ButtonNew>

@@ -17,7 +17,7 @@ const StyledSection = styled.section`
   min-height: 100%;
   max-width: 90%;
   /* background-color: grey; */
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   padding: 2rem;

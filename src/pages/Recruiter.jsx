@@ -21,7 +21,7 @@ const StyledSection = styled.section`
   height: 100%;
   width: 90%;
   /* background-color: grey; */
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   row-gap: 2.5rem;
   flex-direction: column;
@@ -297,21 +297,6 @@ export default function Recruiter() {
             <Value>{recruiter.email}</Value>
           </DetailsContainer>
         </InfoContainer>
-        {/* <InfoContainer>
-          
-          <DetailsContainer>
-            <Label>Organization:</Label>
-            <Value>{recruiter.organization || "Unknown Organization"}</Value>
-          </DetailsContainer>
-          <DetailsContainer>
-            <Label>Mobile Number:</Label>
-            <Value>{recruiter.mobile_number}</Value>
-          </DetailsContainer>
-          <DetailsContainer>
-            <Label>Email:</Label>
-            <Value>{recruiter.email}</Value>
-          </DetailsContainer>
-        </InfoContainer> */}
       </CardContainer>
     );
   };
