@@ -153,7 +153,7 @@ const CardContent = styled.div`
   padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const UserInfo = styled.div`
@@ -193,6 +193,7 @@ const ButtonContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 1em;
+  width: 12%;
 `;
 
 const ButtonNew = styled.button`
@@ -389,15 +390,17 @@ export default function Unclassified() {
             >
               More
             </ButtonNew>
+            {user.verified && (
+              <ButtonNew
+                onClick={() => handleApprove(user.registration_number)}
+                type="approve"
+                verified={user.verified}
+                disabled={!user.verified}
+              >
+                Approve
+              </ButtonNew>
+            )}
 
-            <ButtonNew
-              onClick={() => handleApprove(user.registration_number)}
-              type="approve"
-              verified={user.verified}
-              disabled={!user.verified}
-            >
-              Approve
-            </ButtonNew>
             <ButtonNew
               onClick={() => handleReject(user.registration_number)}
               type="reject"
