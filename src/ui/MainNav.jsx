@@ -15,6 +15,7 @@ import { IoColorFilterOutline } from "react-icons/io5";
 import { useContext, useEffect } from "react";
 import UserContext from "../features/authentication/UserContext";
 import { useSelector } from "react-redux";
+import { CgProfile } from "react-icons/cg";
 
 const NavList = styled.ul`
   display: flex;
@@ -77,37 +78,56 @@ function MainNav() {
             <span>Dashboard</span>
           </StyledNavLink>
         </li>
-        <li>
-          <StyledNavLink to="/recruiter">
-            {/* <HiOutlineHomeModern /> */}
-            <MdOutlinePeopleAlt />
-            <span>{`Recruiters    ${
-              userData?.role === "Recruiter" ? "(You)" : ""
-            }`}</span>
-          </StyledNavLink>
-        </li>
+        {(userData.role === "Admin" || userData.role === "Recruiter") && (
+          <li>
+            <StyledNavLink to="/recruiter">
+              {userData.role === "Admin" ? (
+                <MdOutlinePeopleAlt />
+              ) : (
+                <CgProfile />
+              )}
 
-        <li>
-          <StyledNavLink to="/clients">
-            {/* <HiOutlineUsers /> */}
-            <BiFileFind />
-            <span>{`Clients ${
-              userData?.role_id === "Client" ? "(You)" : ""
-            } `}</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink to="/unclassified">
-            <IoColorFilterOutline />
-            <span>{`Unclassified`}</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink to="/settings">
-            <HiOutlineCog6Tooth />
-            <span>Settings</span>
-          </StyledNavLink>
-        </li>
+              <span>
+                {userData.role === "Admin" ? "Recruiter" : "My Profile"}
+              </span>
+            </StyledNavLink>
+          </li>
+        )}
+        {(userData.role === "Admin" || userData.role === "Client") && (
+          <li>
+            <StyledNavLink to="/job-postings">
+              <BiFileFind />
+              <span>Job Postings</span>
+            </StyledNavLink>
+          </li>
+        )}
+        {(userData.role === "Admin" || userData.role === "Client") && (
+          <li>
+            <StyledNavLink
+              to={`${userData.role === "Admin" ? "/clients" : "/profile"}`}
+            >
+              {userData.role === "Admin" ? <BiFileFind /> : <CgProfile />}
+
+              <span>{userData.role === "Admin" ? "Client" : "My Profile"}</span>
+            </StyledNavLink>
+          </li>
+        )}
+        {userData.role === "Admin" && (
+          <li>
+            <StyledNavLink to="/unclassified">
+              <IoColorFilterOutline />
+              <span>{`Unclassified`}</span>
+            </StyledNavLink>
+          </li>
+        )}
+        {userData.role === "Admin" && (
+          <li>
+            <StyledNavLink to="/settings">
+              <HiOutlineCog6Tooth />
+              <span>Settings</span>
+            </StyledNavLink>
+          </li>
+        )}
       </NavList>
     </nav>
   );

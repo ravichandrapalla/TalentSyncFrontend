@@ -316,6 +316,44 @@ export async function dashBoard({ registration_number: regId }) {
   }
 }
 
+export async function clientProfile(newData) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.post(`${config.apiBaseUrl}/profile`, newData, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+    if (response.status === 200) {
+      const { message, updatedRecord } = response.data;
+      return { message, updatedRecord };
+    }
+  } catch (error) {
+    return error.message;
+  }
+}
+export async function getCurrentUserUpdatedDetails() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.get(
+      `${config.apiBaseUrl}/getCurrentUserDetails`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      const { message, updatedRecord } = response.data;
+      return { message, updatedRecord };
+    }
+  } catch (error) {
+    return error.message;
+  }
+}
+
 // export async function getCurrentUser() {
 //   const { data: session } = await supabase.auth.getSession();
 //   if (!session.session) return null;

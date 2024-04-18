@@ -142,12 +142,10 @@ const InfoContainer = styled.div`
   justify-content: space-around;
   column-gap: 1.5rem;
   width: 70%;
-  /* background-color: violet; */
   flex: 1;
 `;
 
 const Label = styled.p`
-  /* margin-bottom: 5px; */
   font-size: larger;
   font-weight: 600;
   font-family: "Outfit Variable", sans-serif;
@@ -162,8 +160,7 @@ const Value = styled.p`
 `;
 const DetailsContainer = styled.article`
   padding: 0.5%;
-  /* border: 1px solid grey; */
-  /* min-width: 14em; */
+
   display: flex;
   flex-direction: column;
   align-items: center;

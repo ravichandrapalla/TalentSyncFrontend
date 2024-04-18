@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { TbMoodEmpty } from "react-icons/tb";
 import SpinnerComponent from "../ui/SpinnerComponent";
+import EmptyScreen from "../ui/EmptyScreen";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -308,60 +309,19 @@ export default function Client() {
 
   return loading ? (
     <SpinnerComponent />
-  ) : clients.length === 0 ? (
-    <NoDataMessageModel>
-      <TbMoodEmpty size={100} color="tomato" />
-      <p>Oops!.. No data Found</p>
-    </NoDataMessageModel>
-  ) : userData.role === "Admin" ? (
-    <>
-      <StyledSection>
-        {clients.map((client) => (
-          <ClientCard key={client.registration_number} client={client} />
-        ))}
-      </StyledSection>
-    </>
   ) : (
     <StyledSection>
-      <SearchSection>
-        <StyledInput
-          type="text"
-          onChange={(e) => setSearchText(e.target.value)}
-          value={searchText}
-          placeholder="Search with Skills"
-        />
-        {searchText && foundResults?.length > 0 && (
-          <SearchSuggestions>
-            {foundResults.map((suggestion) => (
-              <SearchSuggestionsItem
-                key={suggestion}
-                onClick={() => handleExactSearch(suggestion)}
-              >
-                {suggestion}
-              </SearchSuggestionsItem>
+      {userData.role === "Admin" &&
+        (clients.length === 0 ? (
+          <EmptyScreen />
+        ) : (
+          <>
+            {clients.map((client) => (
+              <ClientCard key={client.registration_number} client={client} />
             ))}
-          </SearchSuggestions>
-        )}
-      </SearchSection>
-      {ValidClients?.map((client) => (
-        <ClientArticle key={client.email}>
-          <UserDetails>
-            <p>{`Name : ${client.username}`}</p>
-            <p>{`Email : ${client.email}`}</p>
-            <p>{`Mobile : ${client.mobile_number}`}</p>
-          </UserDetails>
-
-          {/* <embed src={`data:application/pdf;base64,${client.resume}`} /> */}
-          <DownloadableContainer>
-            <DownloadResume
-              href={`data:application/pdf;base64,${client.resume}`}
-              download="download.pdf"
-            >
-              Download Resume
-            </DownloadResume>
-          </DownloadableContainer>
-        </ClientArticle>
-      ))}
+          </>
+        ))}
+      {userData.role === "Client" && <h1>Empty</h1>}
     </StyledSection>
   );
 }
