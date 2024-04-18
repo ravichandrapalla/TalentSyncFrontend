@@ -354,6 +354,16 @@ export async function getCurrentUserUpdatedDetails() {
   }
 }
 
+export async function getCitiesForCountry() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const cities = await axios.get(`""`);
+  } catch (error) {
+    return error.message;
+  }
+}
+
 // export async function getCurrentUser() {
 //   const { data: session } = await supabase.auth.getSession();
 //   if (!session.session) return null;

@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { TbMoodEmpty } from "react-icons/tb";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import EmptyScreen from "../ui/EmptyScreen";
+import MapLocationPicker from "../ui/LocationPicker";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -321,7 +322,7 @@ export default function Client() {
             ))}
           </>
         ))}
-      {userData.role === "Client" && <h1>Empty</h1>}
+      {userData.role === "Client" && <MapLocationPicker />}
     </StyledSection>
   );
 }

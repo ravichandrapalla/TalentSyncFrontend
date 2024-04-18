@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import useClientProfile from "../features/authentication/useClientProfile";
 import Form from "../ui/Form";
@@ -7,135 +8,106 @@ import UserContext from "../features/authentication/UserContext";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import useUserUpToDateDetails from "./../features/authentication/useUserUptodateDetails";
 import toast from "react-hot-toast";
+import styled from "styled-components";
+import MapLocationPicker from "../ui/LocationPicker";
 
-export default function ClientProfileForm() {
+const StyledSelect = styled.select`
+  background-color: grey;
+  border-radius: 1rem;
+  padding: 0.8rem;
+`;
+const StyledOption = styled.option`
+  background-color: yellow;
+  color: black;
+  padding: 0.5rem;
+`;
+
+export default function ClientProfileForm({ handleUpdate, currUserData }) {
   //   const userData = useContext(UserContext);
-  const [currUserData, setCurrUserData] = useState({});
 
-  console.log("component rendering");
-  const { getUptoDateDetails, isLoading: getReqLoading } =
-    useUserUpToDateDetails();
-  const { updateProfile, isLoading: setReqLoading } = useClientProfile();
-
-  const handleUpdate = (e, field) => {
-    // e.stopPropagation();
-    // e.preventDefault();
-    const { value } = e.target;
-    console.log("compare --> ", value, currUserData[field]);
-    if (!value || value === currUserData[field]) return;
-    updateProfile(
-      { [field]: value },
-      {
-        onSuccess: ({ message, updatedRecord }) => {
-          toast.success("Profile Updated Successfully");
-          setCurrUserData(updatedRecord[0]);
-        },
-        onError: (err) => {
-          toast.error(err || err.message);
-        },
-      }
-    );
-  };
-  useEffect(() => {
-    getUptoDateDetails(
-      {},
-      {
-        onSuccess: ({ updatedRecord }) => {
-          setCurrUserData(updatedRecord);
-          // toast.success("Profile Updated Successfully");
-          console.log("seeting data ", updatedRecord);
-        },
-        onError: (err) => {
-          toast.error(err || err.message);
-        },
-      }
-    );
-  }, []);
   // const setReqLoading = false;
   // const handleUpdate = (e, str) => {
   //   console.log("handle clied");
   // };
 
-  return setReqLoading || getReqLoading ? (
-    <SpinnerComponent />
-  ) : (
-    <Form>
-      <FormRow label="Registration Number">
-        <StyledInput
-          type="text"
-          id="registrationNumber"
-          disabled
-          defaultValue={currUserData.registration_number}
-          onBlur={(e) => handleUpdate(e, "registration_number")}
-        />
-      </FormRow>
-      <FormRow label="User Name">
-        <StyledInput
-          type="text"
-          id="username"
-          disabled={setReqLoading || getReqLoading}
-          defaultValue={currUserData.username}
-          onBlur={(e) => handleUpdate(e, "username")}
-        />
-      </FormRow>
-      <FormRow label="Email">
-        <StyledInput
-          type="email"
-          id="email"
-          disabled={setReqLoading || getReqLoading}
-          defaultValue={currUserData.email}
-          onBlur={(e) => handleUpdate(e, "email")}
-        />
-      </FormRow>
-      <FormRow label="Phone Number">
-        <StyledInput
-          minLength={10}
-          maxLength={10}
-          type="number"
-          id="mobile_number"
-          disabled={setReqLoading || getReqLoading}
-          defaultValue={currUserData.mobile_number}
-          onBlur={(e) => handleUpdate(e, "mobile_number")}
-        />
-      </FormRow>
-      {/* <FormRow label="Location">
-        <StyledInput
-          type="text"
-          id="location"
-          disabled={isLoading}
-          defaultValue={userData?.location || "location"}
-          onBlur={(e)=> handleUpdate(e, 'location') }
-        />
-      </FormRow> */}
-      <FormRow label="Organization">
-        <StyledInput
-          type="text"
-          id="organization"
-          disabled={setReqLoading || getReqLoading}
-          defaultValue={currUserData.organization}
-          onBlur={(e) => handleUpdate(e, "organization")}
-        />
-      </FormRow>
-      {/* <FormRow label="Experience (In Years)">
-        <StyledInput
-          type="number"
-          id="experience"
-          disabled={setReqLoading}
-          defaultValue={currUserData.experience || "2"}
-          onBlur={(e) => handleUpdate(e, "experience")}
-        />
-      </FormRow>
-      <FormRow label="Education">
-        <StyledInput
-          type="text"
-          id="education"
-          disabled={setReqLoading}
-          defaultValue={currUserData.education || "education"}
-          onBlur={(e) => handleUpdate(e, "education")}
-        />
-      </FormRow> */}
+  return (
+    <>
+      <Form type="profile">
+        <FormRow label="Registration Number">
+          <StyledInput
+            type="text"
+            id="registrationNumber"
+            disabled
+            defaultValue={currUserData.registration_number}
+            onBlur={(e) => handleUpdate(e, "registration_number")}
+          />
+        </FormRow>
+        <FormRow label="User Name">
+          <StyledInput
+            type="text"
+            id="username"
+            defaultValue={currUserData.username}
+            onBlur={(e) => handleUpdate(e, "username")}
+          />
+        </FormRow>
+        <FormRow label="Email">
+          <StyledInput
+            type="email"
+            id="email"
+            defaultValue={currUserData.email}
+            onBlur={(e) => handleUpdate(e, "email")}
+          />
+        </FormRow>
+        <FormRow label="Phone Number">
+          <StyledInput
+            minLength={10}
+            maxLength={10}
+            type="number"
+            id="mobile_number"
+            defaultValue={currUserData.mobile_number}
+            onBlur={(e) => handleUpdate(e, "mobile_number")}
+          />
+        </FormRow>
 
-      {/* <UpdateButton>Edit Profile</UpdateButton> */}
-    </Form>
+        <FormRow label="Organization">
+          <StyledInput
+            type="text"
+            id="organization"
+            defaultValue={currUserData.organization}
+            onBlur={(e) => handleUpdate(e, "organization")}
+          />
+        </FormRow>
+        <FormRow label="Experience (In Years)">
+          <StyledInput
+            type="number"
+            id="experience"
+            defaultValue={currUserData.experience || "2"}
+            onBlur={(e) => handleUpdate(e, "experience")}
+          />
+        </FormRow>
+        <FormRow label="Highest Qualification">
+          <StyledSelect
+            type="text"
+            id="highest_qualification"
+            defaultValue={currUserData.highest_education || "education"}
+            onBlur={(e) => handleUpdate(e, "highest_education")}
+          >
+            <StyledOption value="Masters">Masters Degree</StyledOption>
+            <StyledOption value="Bachelors">Bachelors Degree</StyledOption>
+            <StyledOption value="Intermediate">Intermediate</StyledOption>
+            <StyledOption value="HighSchool">HighSchool</StyledOption>
+          </StyledSelect>
+        </FormRow>
+        <FormRow label="Location">
+          <StyledInput
+            type="text"
+            id="location"
+            defaultValue={currUserData?.location || "location"}
+            onBlur={(e) => handleUpdate(e, "location")}
+          />
+        </FormRow>
+      </Form>
+      {/* {true && <MapLocationPicker />} */}
+    </>
   );
 }

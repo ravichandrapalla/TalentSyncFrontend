@@ -26,6 +26,19 @@ const Form = styled.form`
     
   overflow: hidden;
   font-size: 1.4rem;
+  ${(props) =>
+    props.type === "profile" &&
+    css`
+      padding: 4rem;
+
+      /* Box */
+      background-color: var(--color-grey-0);
+      border: 1px solid var(--color-grey-100);
+      border-radius: var(--border-radius-md);
+      width: 100%;
+      border-radius: inherit;
+      overflow: inherit;
+    `}
 `;
 Form.defaultProps = {
   type: "login",
