@@ -10,6 +10,7 @@ import useUserUpToDateDetails from "./../features/authentication/useUserUptodate
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import MapLocationPicker from "../ui/LocationPicker";
+import { getCitiesForCountry } from "../services/apiAuth";
 
 const StyledSelect = styled.select`
   background-color: grey;
@@ -22,13 +23,18 @@ const StyledOption = styled.option`
   padding: 0.5rem;
 `;
 
-export default function ClientProfileForm({ handleUpdate, currUserData }) {
+export default function ClientProfileForm({
+  handleUpdate,
+  currUserData,
+  availableCities,
+}) {
   //   const userData = useContext(UserContext);
 
   // const setReqLoading = false;
   // const handleUpdate = (e, str) => {
   //   console.log("handle clied");
   // };
+  console.log("availableCities  are ", availableCities);
 
   return (
     <>
@@ -99,12 +105,21 @@ export default function ClientProfileForm({ handleUpdate, currUserData }) {
           </StyledSelect>
         </FormRow>
         <FormRow label="Location">
-          <StyledInput
+          <StyledSelect
             type="text"
             id="location"
-            defaultValue={currUserData?.location || "location"}
+            defaultValue={currUserData?.location || ""}
             onBlur={(e) => handleUpdate(e, "location")}
-          />
+          >
+            {availableCities.length > 0 &&
+              availableCities.map((city) => {
+                return (
+                  <StyledOption key={city} value={city}>
+                    {city}
+                  </StyledOption>
+                );
+              })}
+          </StyledSelect>
         </FormRow>
       </Form>
       {/* {true && <MapLocationPicker />} */}

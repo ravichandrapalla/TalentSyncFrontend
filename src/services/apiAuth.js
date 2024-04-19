@@ -354,11 +354,23 @@ export async function getCurrentUserUpdatedDetails() {
   }
 }
 
-export async function getCitiesForCountry() {
+export async function getCitiesForCountry(country) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const cities = await axios.get(`""`);
+    const response = await axios.post(
+      `https://countriesnow.space/api/v0.1/countries/cities`,
+      { country },
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+    const { error, msg, data } = response;
+    if (!error) {
+      return { msg, data };
+    }
   } catch (error) {
     return error.message;
   }

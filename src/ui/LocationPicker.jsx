@@ -1,7 +1,5 @@
-import "mapbox-gl/dist/mapbox-gl.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import mapboxgl from "mapbox-gl";
 
 const ModalBackground = styled.div`
   position: absolute;
@@ -33,11 +31,9 @@ const ModalContainer = styled.section`
   overflow: hidden;
 `;
 export default function LocationPicker() {
-  const [position, setPosition] = useState([51.505, -0.09]);
+  const [cities, setCities] = useState([]);
 
-  const handleMapClick = (e) => {
-    setPosition([e.latlng.lat, e.latlng.lng]);
-  };
+  useEffect(() => {}, []);
 
   return (
     <ModalBackground>

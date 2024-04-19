@@ -8,6 +8,7 @@ import useUserUpToDateDetails from "../features/authentication/useUserUptodateDe
 import useClientProfile from "../features/authentication/useClientProfile";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import Button from "../ui/Button";
+import { getCitiesForCountry } from "../services/apiAuth";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -114,9 +115,15 @@ const ButtonsContainer = styled.div`
   flex-direction: column;
   row-gap: 1rem;
 `;
+const FileInput = styled.input.attrs({ type: "file" })`
+  padding: 2rem;
+`;
 
 const ProfileView = () => {
   const [currUserData, setCurrUserData] = useState({});
+  const [availableCities, setAvailableCities] = useState([]);
+  const [localAPiLoading, setLocalApiLoading] = useState(false);
+  const [avatar, setAvatar] = useState(null);
 
   console.log("component rendering");
   const { getUptoDateDetails, isLoading: getReqLoading } =
@@ -142,6 +149,7 @@ const ProfileView = () => {
       }
     );
   };
+
   useEffect(() => {
     getUptoDateDetails(
       {},
@@ -156,8 +164,17 @@ const ProfileView = () => {
         },
       }
     );
+    setLocalApiLoading(true);
+    getCitiesForCountry("india")
+      .then(({ data }) => {
+        setAvailableCities(data.data);
+      })
+      .catch((err) => toast.error(err.message))
+      .finally(() => {
+        setLocalApiLoading(false);
+      });
   }, []);
-  return getReqLoading || setReqLoading ? (
+  return getReqLoading || setReqLoading || localAPiLoading ? (
     <SpinnerComponent />
   ) : (
     <StyledSection>
@@ -175,7 +192,12 @@ const ProfileView = () => {
             )}
           </Avatar>
           <ButtonsContainer>
-            <Button>Update Avatar</Button>
+            <FileInput
+              id="avatar"
+              accept="image/*"
+              onChange={(e) => setAvatar(e.target.files[0])}
+            />
+
             <UploadButton>
               <label htmlFor="resume-upload">Upload Resume</label>
               <input type="file" id="resume-upload" accept=".pdf,.docx,.doc" />
@@ -186,6 +208,7 @@ const ProfileView = () => {
           <ClientProfileForm
             handleUpdate={handleUpdate}
             currUserData={currUserData}
+            availableCities={availableCities}
           />
         </FormContainer>
       </ProfileContainer>
