@@ -4,6 +4,8 @@
 import toast from "react-hot-toast";
 import config from "../config";
 import axios from "axios";
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(config.supabaseUrl, config.supabaseKey);
 
 export async function signup({
   fullName,
@@ -361,6 +363,43 @@ export async function getCitiesForCountry(country) {
     const response = await axios.post(
       `https://countriesnow.space/api/v0.1/countries/cities`,
       { country },
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+    const { error, msg, data } = response;
+    if (!error) {
+      return { msg, data };
+    }
+  } catch (error) {
+    return error.message;
+  }
+}
+export async function updateUserAvatarApi({ newAvatar, regNumber }) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  console.log("pai data is ", newAvatar, "reg is ", regNumber);
+  const { data, error } = await supabase.storage
+    .from("avatars")
+    .upload(`userId-${regNumber}/avatar-${Math.random()}.jpg`, newAvatar);
+
+  if (error) {
+    console.error("Error uploading avatar:", error.message);
+  } else {
+    const avatarUrl = `${config.supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
+    console.log("Avatar uploaded successfully:", data);
+    updateAvatarUrl(avatarUrl);
+  }
+}
+export async function updateAvatarUrl(url) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axios.post(
+      `${config.apiBaseUrl}/updateAvatarUrl`,
+      { url },
       {
         headers: {
           Authorization: `${token}`,

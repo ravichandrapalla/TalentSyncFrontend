@@ -9,6 +9,8 @@ import useClientProfile from "../features/authentication/useClientProfile";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import Button from "../ui/Button";
 import { getCitiesForCountry } from "../services/apiAuth";
+import { createClient } from "@supabase/supabase-js";
+import useAvatarManager from "../features/authentication/avatarManager";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -124,6 +126,7 @@ const ProfileView = () => {
   const [availableCities, setAvailableCities] = useState([]);
   const [localAPiLoading, setLocalApiLoading] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const { updateUserAvatarManager, isLoading } = useAvatarManager();
 
   console.log("component rendering");
   const { getUptoDateDetails, isLoading: getReqLoading } =
@@ -145,6 +148,25 @@ const ProfileView = () => {
         },
         onError: (err) => {
           toast.error(err || err.message);
+        },
+      }
+    );
+  };
+  const handleUploadAvatar = (e, regNumber) => {
+    setAvatar(e.target.files[0]);
+    const newAvatar = e.target.files[0];
+    if (!e.target.files[0]) {
+      return;
+    }
+    console.log("data ios ", regNumber);
+    updateUserAvatarManager(
+      { newAvatar, regNumber },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+        },
+        onError: (err) => {
+          console.log(err);
         },
       }
     );
@@ -174,6 +196,7 @@ const ProfileView = () => {
         setLocalApiLoading(false);
       });
   }, []);
+
   return getReqLoading || setReqLoading || localAPiLoading ? (
     <SpinnerComponent />
   ) : (
@@ -185,8 +208,8 @@ const ProfileView = () => {
         <AvatarContainer>
           <Avatar>
             {/* Display user image */}
-            {currUserData?.image ? (
-              <img src={currUserData.image} alt="User" />
+            {currUserData?.avatar_url ? (
+              <img src={currUserData.avatar_url} alt="User" />
             ) : (
               <FaUser size={80} />
             )}
@@ -195,7 +218,9 @@ const ProfileView = () => {
             <FileInput
               id="avatar"
               accept="image/*"
-              onChange={(e) => setAvatar(e.target.files[0])}
+              onChange={(e) =>
+                handleUploadAvatar(e, currUserData.registration_number)
+              }
             />
 
             <UploadButton>
