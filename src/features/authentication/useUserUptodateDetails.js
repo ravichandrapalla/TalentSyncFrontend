@@ -13,7 +13,9 @@ export default function useUserUpToDateDetails() {
     },
   });
   return { getUptoDateDetails, isLoading };
-  // const {
+  
+}
+// const {
   //   isLoading,
   //   error,
   //   updatedRecord: data,
@@ -22,4 +24,3 @@ export default function useUserUpToDateDetails() {
   //   queryFn: getCurrentUserUpdatedDetailsApi,
   // });
   // return { isLoading, error, data };
-}

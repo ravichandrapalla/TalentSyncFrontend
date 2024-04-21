@@ -11,6 +11,7 @@ import Button from "../ui/Button";
 import { getCitiesForCountry } from "../services/apiAuth";
 import { createClient } from "@supabase/supabase-js";
 import useAvatarManager from "../features/authentication/avatarManager";
+import "../../src/App.css";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -53,6 +54,7 @@ const AvatarContainer = styled.div`
   row-gap: 4rem;
   width: 30%;
   background-color: grey;
+  overflow: hidden;
 `;
 
 const Avatar = styled.div`
@@ -69,12 +71,13 @@ const Avatar = styled.div`
 
 const UploadButton = styled.label`
   display: block;
-  margin-top: 1rem;
-  cursor: pointer;
+  margin: 1rem;
 
+  /* background-color: green; */
   input[type="file"] {
     display: none;
   }
+  cursor: pointer;
 `;
 
 const ProfileDetails = styled.div`
@@ -115,10 +118,16 @@ const FormContainer = styled.div`
 const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   row-gap: 1rem;
 `;
 const FileInput = styled.input.attrs({ type: "file" })`
-  padding: 2rem;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  width: 100px;
+  overflow: hidden;
 `;
 
 const ProfileView = () => {
@@ -215,17 +224,35 @@ const ProfileView = () => {
             )}
           </Avatar>
           <ButtonsContainer>
-            <FileInput
-              id="avatar"
-              accept="image/*"
-              onChange={(e) =>
-                handleUploadAvatar(e, currUserData.registration_number)
-              }
-            />
+            <div
+              style={{
+                display: "flex",
+                padding: "0.5rem",
+                alignItems: "center",
+              }}
+            >
+              <label htmlFor="avatar">Your Avatar</label>
+              <FileInput
+                id="avatar"
+                accept="image/*"
+                onChange={(e) =>
+                  handleUploadAvatar(e, currUserData.registration_number)
+                }
+              />
+            </div>
 
             <UploadButton>
-              <label htmlFor="resume-upload">Upload Resume</label>
-              <input type="file" id="resume-upload" accept=".pdf,.docx,.doc" />
+              <label style={{ cursor: "inherit" }} htmlFor="resume-upload">
+                Upload Resume
+              </label>
+              <FileInput
+                id="resume-upload"
+                accept=".pdf,.docx,.doc"
+                onChange={(e) => {
+                  "";
+                }}
+              />
+              {/* <input type="file" id="resume-upload" accept=".pdf,.docx,.doc" /> */}
             </UploadButton>
           </ButtonsContainer>
         </AvatarContainer>
