@@ -81,7 +81,8 @@ export default function Dashboard() {
       },
       {
         onSuccess: ({ message, records }) => {
-          setData(records?.[0]);
+          setData(records?.[0] || {});
+
           toast.success(message);
         },
         onError: (err) => {
@@ -94,6 +95,9 @@ export default function Dashboard() {
     console.log(store.getState());
   }, []);
   const StatisticsComponent = ({ currData }) => {
+    // if (!currData.length) {
+    //   return;
+    // }
     const {
       total_recruiters,
       total_clients,

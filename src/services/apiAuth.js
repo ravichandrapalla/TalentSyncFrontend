@@ -33,7 +33,7 @@ export async function signup({
     throw new Error(error.response.data?.message || error.message);
   }
 }
-export async function uploadResume(formData, regId) {
+export async function uploadResume(formData, regId, resumeUrl) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
@@ -45,6 +45,7 @@ export async function uploadResume(formData, regId) {
           Authorization: `${token}`,
           "Content-Type": "multipart/form-data",
         },
+        params: { resumeUrl },
       }
     );
     return response;

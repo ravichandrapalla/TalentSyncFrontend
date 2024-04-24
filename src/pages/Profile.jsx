@@ -8,7 +8,7 @@ import useUserUpToDateDetails from "../features/authentication/useUserUptodateDe
 import useClientProfile from "../features/authentication/useClientProfile";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import Button from "../ui/Button";
-import { getCitiesForCountry } from "../services/apiAuth";
+import { getCitiesForCountry, uploadResume } from "../services/apiAuth";
 import { createClient } from "@supabase/supabase-js";
 import useAvatarManager from "../features/authentication/avatarManager";
 import "../../src/App.css";
@@ -180,6 +180,18 @@ const ProfileView = () => {
       }
     );
   };
+  const handleUpload = (e, regId, resumeUrl) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    let formData = new FormData();
+    console.log("e-> ", e);
+    formData.append("resume", file);
+    console.log("e2-> ", e.target.files[0]);
+    console.log("e3-> ", formData, typeof formData);
+    uploadResume(formData, regId, resumeUrl)
+      .then((resp) => console.log("api resp -> ", resp.data))
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     getUptoDateDetails(
@@ -217,8 +229,8 @@ const ProfileView = () => {
         <AvatarContainer>
           <Avatar>
             {/* Display user image */}
-            {currUserData?.avatar_url ? (
-              <img src={currUserData.avatar_url} alt="User" />
+            {currUserData?.avatar_url || avatar ? (
+              <img src={currUserData.avatar_url || avatar} alt="User" />
             ) : (
               <FaUser size={80} />
             )}
@@ -247,9 +259,13 @@ const ProfileView = () => {
               </label>
               <FileInput
                 id="resume-upload"
-                accept=".pdf,.docx,.doc"
+                accept=".pdf"
                 onChange={(e) => {
-                  "";
+                  handleUpload(
+                    e,
+                    currUserData.registration_number,
+                    currUserData.resume_url
+                  );
                 }}
               />
               {/* <input type="file" id="resume-upload" accept=".pdf,.docx,.doc" /> */}
