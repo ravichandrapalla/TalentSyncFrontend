@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import config from "../config";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
+import axiosInstance from "./axiosInstance";
+
 const supabase = createClient(config.supabaseUrl, config.supabaseKey);
 
 export async function signup({
@@ -19,7 +21,7 @@ export async function signup({
   // return data;
 
   try {
-    const response = await axios.post(`${config.apiBaseUrl}/signup`, {
+    const response = await axiosInstance.post(`${config.apiBaseUrl}/signup`, {
       fullName,
       email,
       password,
@@ -37,7 +39,7 @@ export async function uploadResume(formData, regId, resumeUrl) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${config.apiBaseUrl}/uploadResume/${regId}`,
       formData,
       {
@@ -56,7 +58,7 @@ export async function uploadResume(formData, regId, resumeUrl) {
 
 export async function login({ email, password }) {
   try {
-    const response = await axios.post(`${config.apiBaseUrl}/login`, {
+    const response = await axiosInstance.post(`${config.apiBaseUrl}/login`, {
       email,
       password,
     });
@@ -75,46 +77,49 @@ export async function login({ email, password }) {
     throw new Error(error.response.data?.message || error.message);
   }
 }
-export async function refreshToken() {
-  const token = sessionStorage.getItem("token");
-  const refreshToken = sessionStorage.getItem("refreshtoken");
+// export async function refreshToken() {
+//   const token = sessionStorage.getItem("token");
+//   const refreshToken = sessionStorage.getItem("refreshtoken");
 
-  if (!token)
-    throw new Error("Error in token Extaction while sending to backend");
-  try {
-    const response = await axios.post(
-      `${config.apiBaseUrl}/refreshToken`,
-      {
-        refreshToken: refreshToken,
-      },
-      {
-        headers: {
-          Authorization: `${token}`,
-        },
-      }
-    );
-    console.log("refresh api response - > ", response);
-    const { message } = response.data;
-    const newAccessToken = response.headers["authorization"];
+//   if (!token)
+//     throw new Error("Error in token Extaction while sending to backend");
+//   try {
+//     const response = await axiosInstance.post(
+//       `${config.apiBaseUrl}/refreshToken`,
+//       {
+//         refreshToken: refreshToken,
+//       },
+//       {
+//         headers: {
+//           Authorization: `${token}`,
+//         },
+//       }
+//     );
+//     console.log("refresh api response - > ", response);
+//     const { message } = response.data;
+//     const newAccessToken = response.headers["authorization"];
 
-    // const newAccessToken = response.data.accessToken;
-    sessionStorage.setItem("token", newAccessToken);
-    return message;
-  } catch (error) {
-    throw new Error("Error in refreshing token");
-  }
-}
+//     // const newAccessToken = response.data.accessToken;
+//     sessionStorage.setItem("token", newAccessToken);
+//     return message;
+//   } catch (error) {
+//     throw new Error("Error in refreshing token");
+//   }
+// }
 // const struser = JSON.stringify({ name: user.name, token: token });
 //getCurrentUser(token);
 export async function getCurrentUser() {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.get(`${config.apiBaseUrl}/getCurrentUser`, {
-      headers: {
-        Authorization: `${token}`,
-      },
-    });
+    const response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getCurrentUser`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
 
     console.log("current user is ", response);
     return response?.data?.message;
@@ -127,14 +132,17 @@ export async function jobMatches(searchText) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    let response = await axios.get(`${config.apiBaseUrl}/getJobMatches`, {
-      headers: {
-        Authorization: `${token}`,
-      },
-      params: {
-        searchText: searchText,
-      },
-    });
+    let response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getJobMatches`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+        params: {
+          searchText: searchText,
+        },
+      }
+    );
     const { message, result } = response.data;
     console.log("api message is  ", message);
     return result;
@@ -146,14 +154,17 @@ export async function getMatchedResumes(searchText) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    let response = await axios.get(`${config.apiBaseUrl}/getMatchedResumes`, {
-      headers: {
-        Authorization: `${token}`,
-      },
-      params: {
-        searchText: searchText,
-      },
-    });
+    let response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getMatchedResumes`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+        params: {
+          searchText: searchText,
+        },
+      }
+    );
     const { message, clients: users } = response.data;
     console.log("returned users ---> ", users);
     return users;
@@ -165,11 +176,14 @@ export async function getRecruiters() {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    let response = await axios.get(`${config.apiBaseUrl}/getRecruiters`, {
-      headers: {
-        Authorization: `${token}`,
-      },
-    });
+    let response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getRecruiters`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
 
     const { message, recruiters } = response.data;
     console.log("msg   =----> ", response);
@@ -186,7 +200,7 @@ export async function getClients() {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    let response = await axios.get(`${config.apiBaseUrl}/getClients`, {
+    let response = await axiosInstance.get(`${config.apiBaseUrl}/getClients`, {
       headers: {
         Authorization: `${token}`,
       },
@@ -211,7 +225,7 @@ export async function getAllUsers() {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    let response = await axios.get(`${config.apiBaseUrl}/getAllUsers`, {
+    let response = await axiosInstance.get(`${config.apiBaseUrl}/getAllUsers`, {
       headers: {
         Authorization: `${token}`,
       },
@@ -231,7 +245,7 @@ export async function approveUser(regNumber) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${config.apiBaseUrl}/approveUser`,
       {
         regNumber: regNumber,
@@ -256,7 +270,7 @@ export async function rejectUser(regNumber) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${config.apiBaseUrl}/rejectUser`,
       {
         regNumber: regNumber,
@@ -280,7 +294,7 @@ export async function editUser({ regId, payload }) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${config.apiBaseUrl}/editUser/${regId}`,
       payload,
       {
@@ -302,7 +316,7 @@ export async function dashBoard({ registration_number: regId }) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `${config.apiBaseUrl}/dashboard/${regId}`,
       {
         headers: {
@@ -323,11 +337,15 @@ export async function clientProfile(newData) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(`${config.apiBaseUrl}/profile`, newData, {
-      headers: {
-        Authorization: `${token}`,
-      },
-    });
+    const response = await axiosInstance.post(
+      `${config.apiBaseUrl}/profile`,
+      newData,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     if (response.status === 200) {
       const { message, updatedRecord } = response.data;
       return { message, updatedRecord };
@@ -340,7 +358,7 @@ export async function getCurrentUserUpdatedDetails() {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `${config.apiBaseUrl}/getCurrentUserDetails`,
       {
         headers: {
@@ -361,7 +379,7 @@ export async function getCitiesForCountry(country) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `https://countriesnow.space/api/v0.1/countries/cities`,
       { country },
       {
@@ -398,7 +416,7 @@ export async function updateAvatarUrl(url) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${config.apiBaseUrl}/updateAvatarUrl`,
       { url },
       {
