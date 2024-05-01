@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SkillSearchTab from "./SkillSearchTab";
+import JobPostForm from "./JobPostForm";
 
 const TabContainer = styled.div`
   display: flex;
@@ -61,7 +62,7 @@ export default function ClientTabs({ tabs }) {
       <TabContentContainer>
         {tabs.map((tab) => (
           <TabContent key={`content-${tab.id}`} active={tab.id === activeTab}>
-            <SkillSearchTab />
+            {tab.id === "skillSearch" ? <SkillSearchTab /> : <JobPostForm />}
           </TabContent>
         ))}
       </TabContentContainer>
