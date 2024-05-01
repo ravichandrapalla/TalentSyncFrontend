@@ -300,22 +300,24 @@ export default function Recruiter() {
 
   return loading ? (
     <SpinnerComponent />
-  ) : recruiters.length === 0 ? (
-    <NoDataMessageModel>
-      <TbMoodEmpty size={100} color="tomato" />
-      <p>Oops!.. No data Found</p>
-    </NoDataMessageModel>
   ) : userData.role === "Admin" ? (
-    <>
-      <StyledSection>
-        {recruiters.map((recruiter) => (
-          <RecruiterCard
-            key={recruiter.registration_number}
-            recruiter={recruiter}
-          />
-        ))}
-      </StyledSection>
-    </>
+    recruiters.length === 0 ? (
+      <NoDataMessageModel>
+        <TbMoodEmpty size={100} color="tomato" />
+        <p>Oops!.. No data Found</p>
+      </NoDataMessageModel>
+    ) : (
+      <>
+        <StyledSection>
+          {recruiters.map((recruiter) => (
+            <RecruiterCard
+              key={recruiter.registration_number}
+              recruiter={recruiter}
+            />
+          ))}
+        </StyledSection>
+      </>
+    )
   ) : (
     <StyledSection>
       <SearchSection>

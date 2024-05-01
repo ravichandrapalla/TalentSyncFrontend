@@ -20,6 +20,7 @@ import Unclassified from "./pages/Unclassified";
 import store from "./redux/store";
 import { Provider } from "react-redux";
 import ProfileView from "./pages/Profile";
+import FindClients from "./pages/FindClients";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +55,7 @@ function App() {
             <Route path="recruiter" element={<Recruiter />} />
             <Route path="profile" element={<ProfileView />} />
             <Route path="clients" element={<Client />} />
+            <Route path="findclient" element={<FindClients />} />
           </Route>
 
           <Route path="login" element={<Login />} />

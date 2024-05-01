@@ -78,6 +78,19 @@ function MainNav() {
             <span>Dashboard</span>
           </StyledNavLink>
         </li>
+        {userData.role === "Recruiter" && (
+          <li>
+            <StyledNavLink to="/findclient">
+              {userData.role === "Admin" ? (
+                <MdOutlinePeopleAlt />
+              ) : (
+                <CgProfile />
+              )}
+
+              <span>Find Client</span>
+            </StyledNavLink>
+          </li>
+        )}
         {(userData.role === "Admin" || userData.role === "Recruiter") && (
           <li>
             <StyledNavLink to="/recruiter">
