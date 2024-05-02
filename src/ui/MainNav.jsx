@@ -106,14 +106,20 @@ function MainNav() {
             </StyledNavLink>
           </li>
         )}
-        {(userData.role === "Admin" || userData.role === "Client") && (
+        {
           <li>
             <StyledNavLink to="/job-postings">
               <BiFileFind />
-              <span>Job Postings</span>
+              <span>
+                {userData.role === "Admin"
+                  ? "Job Postings"
+                  : userData.role === "Recruiter"
+                  ? "My Job Posting"
+                  : "New Job Openings"}
+              </span>
             </StyledNavLink>
           </li>
-        )}
+        }
         {(userData.role === "Admin" || userData.role === "Client") && (
           <li>
             <StyledNavLink

@@ -438,11 +438,33 @@ export async function postJob(jD) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
   try {
-    const response = axiosInstance.post(`${config.apiBaseUrl}/postJob`, jD, {
-      headers: { Authorization: token },
-    });
+    const response = await axiosInstance.post(
+      `${config.apiBaseUrl}/postJob`,
+      jD,
+      {
+        headers: { Authorization: token },
+      }
+    );
     const { message } = response.body;
     return message;
+  } catch (error) {
+    return error.message;
+  }
+}
+
+export async function getJobPostings() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getJobPostings`,
+      {
+        headers: { Authorization: token },
+      }
+    );
+    console.log("response is ---> ", response);
+    const { message, jobPosts } = response.data;
+    return { message, jobPosts };
   } catch (error) {
     return error.message;
   }

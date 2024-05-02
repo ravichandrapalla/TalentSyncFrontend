@@ -40,7 +40,7 @@ export default function JobPostForm() {
       description: "",
       company: "",
       location: "",
-      salary: null,
+      salary: 0,
     },
   });
   const { jobPost, isLoading } = usePostJobApiHandler();
@@ -52,9 +52,9 @@ export default function JobPostForm() {
         description: "",
         company: "",
         location: "",
-        salary: null,
+        salary: 0,
       }),
-      onSuccess: (message) => {
+      onSuccess: ({ message }) => {
         toast.success(message);
       },
     });
