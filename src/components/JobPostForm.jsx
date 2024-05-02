@@ -1,6 +1,9 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+
+import SpinnerComponent from "../ui/SpinnerComponent";
+import { usePostJobApiHandler } from "../features/authentication/usePostJobApiHandler";
+import toast from "react-hot-toast";
 
 const JobFormContainer = styled.div`
   display: flex;
@@ -30,11 +33,35 @@ export default function JobPostForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    reset,
+  } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      company: "",
+      location: "",
+      salary: null,
+    },
+  });
+  const { jobPost, isLoading } = usePostJobApiHandler();
   const onSubmit = (data) => {
     console.log(data);
+    jobPost(data, {
+      onSettled: reset({
+        title: "",
+        description: "",
+        company: "",
+        location: "",
+        salary: null,
+      }),
+      onSuccess: (message) => {
+        toast.success(message);
+      },
+    });
   };
-  return (
+  return isLoading ? (
+    <SpinnerComponent />
+  ) : (
     <JobFormContainer>
       <h2>Job Posting Form</h2>
       <LocalForm onSubmit={handleSubmit(onSubmit)}>
