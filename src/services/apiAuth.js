@@ -469,3 +469,42 @@ export async function getJobPostings() {
     return error.message;
   }
 }
+
+export async function applyJobPosting(jobId) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.post(
+      `${config.apiBaseUrl}/applyJobPosting`,
+      { jobId },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const { message } = response.data;
+    return message;
+  } catch (error) {
+    return error.message;
+  }
+}
+
+export async function getJobApplications() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getJobApplications`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const { message, applications } = response.data;
+    return { message, applications };
+  } catch (error) {
+    return error.message;
+  }
+}

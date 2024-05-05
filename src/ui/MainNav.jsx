@@ -120,7 +120,7 @@ function MainNav() {
             </StyledNavLink>
           </li>
         }
-        {(userData.role === "Admin" || userData.role === "Client") && (
+        {
           <li>
             <StyledNavLink
               to={`${userData.role === "Admin" ? "/clients" : "/profile"}`}
@@ -130,7 +130,7 @@ function MainNav() {
               <span>{userData.role === "Admin" ? "Client" : "My Profile"}</span>
             </StyledNavLink>
           </li>
-        )}
+        }
         {userData.role === "Admin" && (
           <li>
             <StyledNavLink to="/unclassified">
@@ -144,6 +144,14 @@ function MainNav() {
             <StyledNavLink to="/settings">
               <HiOutlineCog6Tooth />
               <span>Settings</span>
+            </StyledNavLink>
+          </li>
+        )}
+        {userData.role === "Recruiter" && (
+          <li>
+            <StyledNavLink to="/job-applications">
+              <HiOutlineCog6Tooth />
+              <span>Job Applications</span>
             </StyledNavLink>
           </li>
         )}

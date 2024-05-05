@@ -4,6 +4,7 @@ import axios from "axios";
 import UserContext from "../features/authentication/UserContext";
 import { useGetJobPostingsApiHandler } from "../features/authentication/useGetJobPostingsApiHandler";
 import toast from "react-hot-toast";
+import { useApplyJobPostingApiHandler } from "../features/authentication/useApplyJobPostingApiHandler";
 
 const JobPostingsContainer = styled.div`
   display: flex;
@@ -42,7 +43,10 @@ const Salary = styled.p`
 
 const JobPostings = () => {
   const userData = useContext(UserContext);
-  const { getJobPostings, isLoading } = useGetJobPostingsApiHandler();
+  const { getJobPostings, isLoading: getJobPostsApiLoading } =
+    useGetJobPostingsApiHandler();
+  const { applyJob, isLoading: applyJobPostsApiLoading } =
+    useApplyJobPostingApiHandler();
 
   const [jobPostings, setJobPostings] = useState([]);
 
@@ -61,18 +65,19 @@ const JobPostings = () => {
   return (
     <JobPostingsContainer>
       <h2>Job Postings</h2>
-      {isLoading ? (
+      {getJobPostsApiLoading || applyJobPostsApiLoading ? (
         <p>Loading...</p>
       ) : jobPostings.length === 0 ? (
         <p>No job postings found.</p>
       ) : (
         jobPostings?.map((job) => (
-          <JobPostingCard key={job.id}>
+          <JobPostingCard key={job.job_id}>
             <JobTitle>{job.title}</JobTitle>
             <JobDescription>{job.description}</JobDescription>
             <CompanyName>Company: {job.company}</CompanyName>
             <Location>Location: {job.currlocation}</Location>
             <Salary>Salary: {parseInt(job.salary) || "Not Disclosed"}</Salary>
+            <button onClick={() => applyJob(job.job_id)}>Apply</button>
           </JobPostingCard>
         ))
       )}
