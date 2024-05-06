@@ -155,6 +155,14 @@ function MainNav() {
             </StyledNavLink>
           </li>
         )}
+        {userData.role === "Client" && (
+          <li>
+            <StyledNavLink to="/My-applications">
+              <HiOutlineCog6Tooth />
+              <span>My Applications</span>
+            </StyledNavLink>
+          </li>
+        )}
       </NavList>
     </nav>
   );

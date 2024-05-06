@@ -483,8 +483,8 @@ export async function applyJobPosting(jobId) {
         },
       }
     );
-    const { message } = response.data;
-    return message;
+    const { message, appliedJobId } = response.data;
+    return { message, appliedJobId };
   } catch (error) {
     return error.message;
   }
@@ -502,8 +502,26 @@ export async function getJobApplications() {
         },
       }
     );
-    const { message, applications } = response.data;
-    return { message, applications };
+    const { message, applicationRecords } = response.data;
+    return { message, applicationRecords };
+  } catch (error) {
+    return error.message;
+  }
+}
+export async function getClientJobApplications() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getclientjobapplications`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const { message, applicationRecords } = response.data;
+    return { message, applicationRecords };
   } catch (error) {
     return error.message;
   }

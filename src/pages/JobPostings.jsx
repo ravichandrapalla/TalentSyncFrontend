@@ -61,6 +61,19 @@ const JobPostings = () => {
       }
     );
   }, []);
+  const applyJobHandler = (jobId) => {
+    applyJob(jobId, {
+      onSuccess: (data) => {
+        const filteredJobs = jobPostings.filter(
+          (post) => post.job_id !== data.appliedJobId
+        );
+        setJobPostings(filteredJobs);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+  };
 
   return (
     <JobPostingsContainer>
@@ -77,7 +90,9 @@ const JobPostings = () => {
             <CompanyName>Company: {job.company}</CompanyName>
             <Location>Location: {job.currlocation}</Location>
             <Salary>Salary: {parseInt(job.salary) || "Not Disclosed"}</Salary>
-            <button onClick={() => applyJob(job.job_id)}>Apply</button>
+            {userData.role === "Client" && (
+              <button onClick={() => applyJobHandler(job.job_id)}>Apply</button>
+            )}
           </JobPostingCard>
         ))
       )}

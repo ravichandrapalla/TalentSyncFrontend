@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetJobApplicationsApiHandler } from "../features/authentication/useGetJobApplicationsApiHandler";
 import styled from "styled-components";
+import { toast } from "react-hot-toast";
 const JobPostingsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -14,27 +15,27 @@ const JobPostingCard = styled.div`
   margin-bottom: 20px;
   width: 80%;
   max-width: 600px;
+  cursor: pointer;
 `;
 
 const JobTitle = styled.h3`
   margin-bottom: 10px;
 `;
 
-const JobDescription = styled.p`
+const Info = styled.p`
   margin-bottom: 10px;
+`;
+const StyledSelect = styled.select`
+  background-color: grey;
+  border-radius: 1rem;
+  padding: 0.8rem;
+`;
+const StyledOption = styled.option`
+  background-color: yellow;
+  color: black;
+  padding: 0.5rem;
 `;
 
-const CompanyName = styled.p`
-  margin-bottom: 10px;
-`;
-
-const Location = styled.p`
-  margin-bottom: 10px;
-`;
-
-const Salary = styled.p`
-  margin-bottom: 10px;
-`;
 export default function JobApplications() {
   const { getJobApplications, isLoading: getJobApplicationsApiLoading } =
     useGetJobApplicationsApiHandler();
@@ -42,12 +43,20 @@ export default function JobApplications() {
   useEffect(() => {
     getJobApplications(
       {},
-      { onSuccess: (data) => setApplications(data.applications) }
+      {
+        onSuccess: (data) => setApplications(data.applicationRecords),
+        onError: (err) => {
+          toast.error(err.message);
+        },
+      }
     );
   }, []);
+  const handleStatusUpdate = (e) => {
+    e.stopPropagation();
+  };
   return (
     <JobPostingsContainer>
-      <h2>Job Postings</h2>
+      <h2>Job Applications</h2>
       {getJobApplicationsApiLoading ? (
         <p>Loading...</p>
       ) : applications.length === 0 ? (
@@ -56,11 +65,25 @@ export default function JobApplications() {
         applications?.map((job) => (
           <JobPostingCard key={job.job_id}>
             <JobTitle>{job.title}</JobTitle>
-            <JobDescription>Requriment : {job.description}</JobDescription>
-            <CompanyName>Company: {job.company}</CompanyName>
-            <Location>Location: {job.currlocation}</Location>
-            <Salary>Salary: {parseInt(job.salary) || "Not Disclosed"}</Salary>
-            <button onClick={() => "applyJob(job.job_id)"}>Apply</button>
+            <Info>JobRole: {job.title}</Info>
+            <Info>UserName : {job.username}</Info>
+            <Info>Email: {job.email}</Info>
+            <Info>Organization : {job.organization ?? "N/A"}</Info>
+            <Info>Phone: {job.mobile_number}</Info>
+            <Info>Experience : {job.experience ?? 0}</Info>
+
+            <Info>
+              Status:{" "}
+              <StyledSelect
+                defaultValue={job.status}
+                onBlur={(e) => handleStatusUpdate(e)}
+              >
+                <StyledOption value="Pending">Pending</StyledOption>
+                <StyledOption value="Reviewed">reviewed</StyledOption>
+                <StyledOption value="Rejected">rejected</StyledOption>
+                <StyledOption value="Shortlisted">shortlisted</StyledOption>
+              </StyledSelect>
+            </Info>
           </JobPostingCard>
         ))
       )}

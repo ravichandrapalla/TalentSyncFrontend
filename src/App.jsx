@@ -23,6 +23,7 @@ import ProfileView from "./pages/Profile";
 import FindClients from "./pages/FindClients";
 import JobPostings from "./pages/JobPostings";
 import JobApplications from "./pages/JobApplications";
+import MyApplications from "./pages/MyApplications";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ function App() {
             <Route path="findclient" element={<FindClients />} />
             <Route path="job-postings" element={<JobPostings />} />
             <Route path="job-applications" element={<JobApplications />} />
+            <Route path="My-applications" element={<MyApplications />} />
           </Route>
 
           <Route path="login" element={<Login />} />
