@@ -526,3 +526,23 @@ export async function getClientJobApplications() {
     return error.message;
   }
 }
+
+export async function updateClientApplicationStatus({ value, applicationId }) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.put(
+      `${config.apiBaseUrl}/updateClientApplicationStatus`,
+      { value, applicationId },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const { message } = response.data;
+    return { message };
+  } catch (error) {
+    return error;
+  }
+}

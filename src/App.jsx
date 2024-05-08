@@ -24,6 +24,7 @@ import FindClients from "./pages/FindClients";
 import JobPostings from "./pages/JobPostings";
 import JobApplications from "./pages/JobApplications";
 import MyApplications from "./pages/MyApplications";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ function App() {
   // );
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={true} />
       <GlobalStyles />
       <BrowserRouter>
         <Routes>

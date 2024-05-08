@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useGetJobApplicationsApiHandler } from "../features/authentication/useGetJobApplicationsApiHandler";
 import styled from "styled-components";
 import { toast } from "react-hot-toast";
+import { useUpdateStatus } from "../features/authentication/useApplicationStatusApiHandler";
 const JobPostingsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -39,6 +40,7 @@ const StyledOption = styled.option`
 export default function JobApplications() {
   const { getJobApplications, isLoading: getJobApplicationsApiLoading } =
     useGetJobApplicationsApiHandler();
+  const { updateStatus, isLoading: updateApiLoading } = useUpdateStatus();
   const [applications, setApplications] = useState([]);
   useEffect(() => {
     getJobApplications(
@@ -51,13 +53,21 @@ export default function JobApplications() {
       }
     );
   }, []);
-  const handleStatusUpdate = (e) => {
+  const handleStatusUpdate = (e, applicationId) => {
     e.stopPropagation();
+    const value = e.target.value;
+    updateStatus(
+      { value, applicationId },
+      {
+        onSuccess: (data) => toast.success(data?.message),
+        onError: (err) => toast.error(err.message),
+      }
+    );
   };
   return (
     <JobPostingsContainer>
       <h2>Job Applications</h2>
-      {getJobApplicationsApiLoading ? (
+      {getJobApplicationsApiLoading || updateApiLoading ? (
         <p>Loading...</p>
       ) : applications.length === 0 ? (
         <p>No job postings found.</p>
@@ -76,12 +86,12 @@ export default function JobApplications() {
               Status:{" "}
               <StyledSelect
                 defaultValue={job.status}
-                onBlur={(e) => handleStatusUpdate(e)}
+                onBlur={(e) => handleStatusUpdate(e, job.application_id)}
               >
                 <StyledOption value="Pending">Pending</StyledOption>
-                <StyledOption value="Reviewed">reviewed</StyledOption>
-                <StyledOption value="Rejected">rejected</StyledOption>
-                <StyledOption value="Shortlisted">shortlisted</StyledOption>
+                <StyledOption value="Reviewed">Reviewed</StyledOption>
+                <StyledOption value="Rejected">Rejected</StyledOption>
+                <StyledOption value="Shortlisted">Shortlisted</StyledOption>
               </StyledSelect>
             </Info>
           </JobPostingCard>
