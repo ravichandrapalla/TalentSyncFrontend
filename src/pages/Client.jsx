@@ -14,6 +14,8 @@ import { TbMoodEmpty } from "react-icons/tb";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import EmptyScreen from "../ui/EmptyScreen";
 import MapLocationPicker from "../ui/LocationPicker";
+import { SlOptions } from "react-icons/sl";
+import { useRevokeUser } from "../features/authentication/useRevokeUser";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -134,6 +136,7 @@ const CardContainer = styled.div`
   overflow: hidden;
   column-gap: 1.5rem;
   flex-wrap: wrap;
+  position: relative;
 `;
 const AvatarContainer = styled.div`
   display: flex;
@@ -190,6 +193,39 @@ const NoDataMessageModel = styled.article`
   justify-content: center;
   align-items: center;
 `;
+const IconContainer = styled.div`
+  background-color: white;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  position: absolute;
+  display: flex;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+`;
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 0px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 15rem;
+  display: ${(props) => (props.isOpen ? "block" : "none")};
+`;
+
+const DropdownItem = styled.button`
+  /* padding: 0.5rem; */
+
+  width: 100%;
+  margin: 2px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
 
 export default function Client() {
   const [searchText, setSearchText] = useState("");
@@ -198,8 +234,10 @@ export default function Client() {
   const [ValidClients, setValidClients] = useState([]);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(0);
   const userData = useContext(UserContext);
   const storeData = useSelector((state) => state);
+  const { revokeUser, isLoading } = useRevokeUser();
   const dispatch = useDispatch();
 
   useState(() => {
@@ -268,9 +306,28 @@ export default function Client() {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
+  const handleOptionDropDown = (regId) => {
+    if (isOpen && isOpen === regId) {
+      setIsOpen(0);
+    } else {
+      setIsOpen(regId);
+    }
+  };
   const ClientCard = ({ client }) => {
     return (
       <CardContainer>
+        <IconContainer
+          onClick={() => handleOptionDropDown(client.registration_number)}
+        >
+          <SlOptions />
+          <DropdownMenu isOpen={isOpen === client.registration_number}>
+            <DropdownItem onClick={() => revokeUser(client.id)}>
+              DeActivate User
+            </DropdownItem>
+            <DropdownItem>Option 2</DropdownItem>
+            <DropdownItem>Option 3</DropdownItem>
+          </DropdownMenu>
+        </IconContainer>
         <AvatarContainer>
           <Avatar>
             {client.image ? (

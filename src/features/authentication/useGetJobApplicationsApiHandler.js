@@ -1,15 +1,14 @@
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { getJobApplications as getJobApplicationsApi } from "../../services/apiAuth";
 
 export function useGetJobApplicationsApiHandler() {
-  const { mutate: getJobApplications, isLoading } = useMutation({
-    mutationFn: getJobApplicationsApi,
-    onSuccess: (data) => {
-      return data;
-    },
-    onError: (err) => {
-      return err;
-    },
+  const {
+    data: jobApplications,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["job-applications"],
+    queryFn: getJobApplicationsApi,
   });
-  return { getJobApplications, isLoading };
+  return { jobApplications, isLoading, error };
 }

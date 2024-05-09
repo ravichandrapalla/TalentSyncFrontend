@@ -337,9 +337,7 @@ export default function Unclassified() {
     }
     setEditModalVisible((visible) => !visible);
   };
-  useEffect(() => {
-    console.log("opened ----> ", isOpen);
-  }, [isOpen]);
+
   const updateLocalData = (message, updatedTarget) => {
     const updatedLocalData = data.map((user) => {
       if (user.registration_number === updatedTarget[0].registration_number) {
@@ -348,12 +346,6 @@ export default function Unclassified() {
         return user;
       }
     });
-    console.log(
-      "updated map data is ------>",
-      updatedLocalData,
-      "taregt is ",
-      updatedTarget
-    );
     setData(updatedLocalData);
   };
 
@@ -425,25 +417,29 @@ export default function Unclassified() {
   return loading ? (
     <SpinnerComponent />
   ) : userData.role === "Admin" ? (
-    <StyledSection>
-      {<MyModal isOpen={isOpen} onClose={handleView} user={selectedUser} />}
-      {
-        <EditForm
-          isOpen={editModalVisible}
-          onClose={() => handleEdit()}
-          user={selectedUser}
-          updateLocalData={({ message, updatedRecord }) =>
-            updateLocalData(message, updatedRecord)
-          }
-        />
-      }
-      {data?.map((user) => (
-        <UserCard user={user} key={user.registration_number} />
-      ))}
-    </StyledSection>
+    data?.length === 0 ? (
+      <p>No Data Found</p>
+    ) : (
+      <StyledSection>
+        {<MyModal isOpen={isOpen} onClose={handleView} user={selectedUser} />}
+        {
+          <EditForm
+            isOpen={editModalVisible}
+            onClose={() => handleEdit()}
+            user={selectedUser}
+            updateLocalData={({ message, updatedRecord }) =>
+              updateLocalData(message, updatedRecord)
+            }
+          />
+        }
+        {data?.map((user) => (
+          <UserCard user={user} key={user.registration_number} />
+        ))}
+      </StyledSection>
+    )
   ) : (
     <StyledSection>
-      {data?.map((user) => (
+      {/* {data?.map((user) => (
         <StyledArticle key={user.registration_number}>
           <>
             <ProfileContainer>
@@ -472,13 +468,10 @@ export default function Unclassified() {
             </ButtonContainer>
           </>
 
-          {/* <SiteDataContainer>
-        {user.role_id && <StyledRole>{data["0"].role_id}</StyledRole>}
-
-        <StyledRegNo>{user.registration_number}</StyledRegNo>
-      </SiteDataContainer> */}
+         
         </StyledArticle>
-      ))}
+      ))} */}
+      You are Not Authorized to access this page
     </StyledSection>
   );
 }

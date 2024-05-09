@@ -463,8 +463,8 @@ export async function getJobPostings() {
       }
     );
     console.log("response is ---> ", response);
-    const { message, jobPosts } = response.data;
-    return { message, jobPosts };
+    const { message, jobPosts, isUserAllowed } = response.data;
+    return { message, jobPosts, isUserAllowed };
   } catch (error) {
     return error.message;
   }
@@ -534,6 +534,25 @@ export async function updateClientApplicationStatus({ value, applicationId }) {
     const response = await axiosInstance.put(
       `${config.apiBaseUrl}/updateClientApplicationStatus`,
       { value, applicationId },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const { message } = response.data;
+    return { message };
+  } catch (error) {
+    return error;
+  }
+}
+export async function revokeUserAccess(userId) {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.put(
+      `${config.apiBaseUrl}/revokeAccess`,
+      { userId },
       {
         headers: {
           Authorization: token,

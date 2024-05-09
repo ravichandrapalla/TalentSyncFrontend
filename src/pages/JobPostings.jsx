@@ -5,6 +5,8 @@ import UserContext from "../features/authentication/UserContext";
 import { useGetJobPostingsApiHandler } from "../features/authentication/useGetJobPostingsApiHandler";
 import toast from "react-hot-toast";
 import { useApplyJobPostingApiHandler } from "../features/authentication/useApplyJobPostingApiHandler";
+import SpinnerComponent from "../ui/SpinnerComponent";
+import MessageComponent from "../ui/MessageComponent";
 
 const JobPostingsContainer = styled.div`
   display: flex;
@@ -42,6 +44,7 @@ const Salary = styled.p`
 `;
 
 const JobPostings = () => {
+  const [message, setMessage] = useState("");
   const userData = useContext(UserContext);
   const { getJobPostings, isLoading: getJobPostsApiLoading } =
     useGetJobPostingsApiHandler();
@@ -54,9 +57,12 @@ const JobPostings = () => {
     getJobPostings(
       {},
       {
-        onSuccess: ({ message, jobPosts }) => {
+        onSuccess: ({ message, jobPosts, isUserAllowed }) => {
           toast.success(message);
           setJobPostings(jobPosts);
+          if (!isUserAllowed) {
+            setMessage("You access is Revoked by Admin please Contact Admin");
+          }
         },
       }
     );
@@ -77,9 +83,10 @@ const JobPostings = () => {
 
   return (
     <JobPostingsContainer>
+      {message && <MessageComponent message={message} />}
       <h2>Job Postings</h2>
       {getJobPostsApiLoading || applyJobPostsApiLoading ? (
-        <p>Loading...</p>
+        <SpinnerComponent />
       ) : jobPostings.length === 0 ? (
         <p>No job postings found.</p>
       ) : (

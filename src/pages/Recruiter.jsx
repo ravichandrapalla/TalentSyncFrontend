@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { TbMoodEmpty } from "react-icons/tb";
 import SpinnerComponent from "../ui/SpinnerComponent";
+import { SlOptions } from "react-icons/sl";
+import { useRevokeUser } from "../features/authentication/useRevokeUser";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -119,6 +121,7 @@ const CardContainer = styled.div`
   overflow: hidden;
   column-gap: 1.5rem;
   flex-wrap: wrap;
+  position: relative;
 `;
 
 const Avatar = styled.div`
@@ -181,6 +184,39 @@ const NoDataMessageModel = styled.article`
   justify-content: center;
   align-items: center;
 `;
+const IconContainer = styled.div`
+  background-color: white;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  position: absolute;
+  display: flex;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+`;
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 0px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 15rem;
+  display: ${(props) => (props.isOpen ? "block" : "none")};
+`;
+
+const DropdownItem = styled.button`
+  /* padding: 0.5rem; */
+
+  width: 100%;
+  margin: 2px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
 
 export default function Recruiter() {
   const [searchText, setSearchText] = useState("");
@@ -190,6 +226,8 @@ export default function Recruiter() {
   const [recruiters, setRecruiters] = useState([]);
   const [loading, setLoading] = useState(false);
   const userData = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(0);
+  const { revokeUser, isLoading } = useRevokeUser();
   const storeData = useSelector((state) => state);
   const dispatch = useDispatch();
 
@@ -258,9 +296,29 @@ export default function Recruiter() {
     setSearchText(suggestion);
     setResumeSearch(true);
   };
+  const handleOptionDropDown = (regId) => {
+    if (isOpen && isOpen === regId) {
+      setIsOpen(0);
+    } else {
+      setIsOpen(regId);
+    }
+  };
   const RecruiterCard = ({ recruiter }) => {
     return (
-      <CardContainer>
+      <CardContainer onBlur={() => handleOptionDropDown(0)}>
+        <IconContainer
+          onClick={() => handleOptionDropDown(recruiter.registration_number)}
+        >
+          <SlOptions />
+          <DropdownMenu isOpen={isOpen === recruiter.registration_number}>
+            <DropdownItem onClick={() => revokeUser(recruiter.id)}>
+              DeActivate User
+            </DropdownItem>
+            <DropdownItem>Option 2</DropdownItem>
+            <DropdownItem>Option 3</DropdownItem>
+          </DropdownMenu>
+        </IconContainer>
+
         <AvatarContainer>
           <Avatar>
             {recruiter.image ? (

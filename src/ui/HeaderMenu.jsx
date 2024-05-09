@@ -56,7 +56,7 @@ export function HeaderMenu() {
       <StyledLegend>
         <p>{storeData.tabSlice.tab}</p>
       </StyledLegend>
-      <SearchBox />
+      {/* <SearchBox /> */}
 
       <StyledHeaderMenu>
         <Avatar src={defaultAvatar} alt={`Avatar of `} />

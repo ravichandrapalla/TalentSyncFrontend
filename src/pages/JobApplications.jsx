@@ -38,21 +38,20 @@ const StyledOption = styled.option`
 `;
 
 export default function JobApplications() {
-  const { getJobApplications, isLoading: getJobApplicationsApiLoading } =
-    useGetJobApplicationsApiHandler();
+  const {
+    jobApplications,
+    isLoading: getJobApplicationsApiLoading,
+    error: jobApplicationsError,
+  } = useGetJobApplicationsApiHandler();
   const { updateStatus, isLoading: updateApiLoading } = useUpdateStatus();
   const [applications, setApplications] = useState([]);
   useEffect(() => {
-    getJobApplications(
-      {},
-      {
-        onSuccess: (data) => setApplications(data.applicationRecords),
-        onError: (err) => {
-          toast.error(err.message);
-        },
-      }
-    );
-  }, []);
+    if (jobApplications) {
+      setApplications(jobApplications.applicationRecords);
+    } else if (jobApplicationsError) {
+      toast.error(jobApplicationsError.message);
+    }
+  }, [jobApplications]);
   const handleStatusUpdate = (e, applicationId) => {
     e.stopPropagation();
     const value = e.target.value;
@@ -86,7 +85,7 @@ export default function JobApplications() {
               Status:{" "}
               <StyledSelect
                 defaultValue={job.status}
-                onBlur={(e) => handleStatusUpdate(e, job.application_id)}
+                onChange={(e) => handleStatusUpdate(e, job.application_id)}
               >
                 <StyledOption value="Pending">Pending</StyledOption>
                 <StyledOption value="Reviewed">Reviewed</StyledOption>
