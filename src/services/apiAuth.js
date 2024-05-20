@@ -520,8 +520,8 @@ export async function getClientJobApplications() {
         },
       }
     );
-    const { message, applicationRecords } = response.data;
-    return { message, applicationRecords };
+    const { message, applicationRecords, isUserAllowed } = response.data;
+    return { message, applicationRecords, isUserAllowed };
   } catch (error) {
     return error.message;
   }

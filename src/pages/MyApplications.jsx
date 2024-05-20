@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useGetClientJobApplicationsApiHandler } from "../features/authentication/useGetClientJobApplicationsApiHandler";
 import toast from "react-hot-toast";
 import { differenceInMilliseconds, formatDistance } from "date-fns";
+import MessageComponent from "../ui/MessageComponent";
 const JobPostingsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -29,6 +30,7 @@ const Info = styled.p`
 `;
 
 export default function MyApplications() {
+  const [message, setMessage] = useState("");
   const {
     getClientJobApplications,
     isLoading: getClientJobApplicationApiLoading,
@@ -38,7 +40,12 @@ export default function MyApplications() {
     getClientJobApplications(
       {},
       {
-        onSuccess: (data) => setApplications(data.applicationRecords),
+        onSuccess: (data) => {
+          setApplications(data.applicationRecords);
+          if (!data.isUserAllowed) {
+            setMessage("You access is Revoked by Admin please Contact Admin");
+          }
+        },
         onError: (err) => {
           toast.error(err.message);
         },
@@ -60,6 +67,7 @@ export default function MyApplications() {
   };
   return (
     <JobPostingsContainer>
+      {message && <MessageComponent message={message} />}
       <h2>Job Applications</h2>
       {getClientJobApplicationApiLoading ? (
         <p>Loading...</p>

@@ -3,6 +3,7 @@ import { useGetJobApplicationsApiHandler } from "../features/authentication/useG
 import styled from "styled-components";
 import { toast } from "react-hot-toast";
 import { useUpdateStatus } from "../features/authentication/useApplicationStatusApiHandler";
+import MessageComponent from "../ui/MessageComponent";
 const JobPostingsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -38,6 +39,7 @@ const StyledOption = styled.option`
 `;
 
 export default function JobApplications() {
+  const [message, setMessage] = useState("");
   const {
     jobApplications,
     isLoading: getJobApplicationsApiLoading,
@@ -46,12 +48,15 @@ export default function JobApplications() {
   const { updateStatus, isLoading: updateApiLoading } = useUpdateStatus();
   const [applications, setApplications] = useState([]);
   useEffect(() => {
+    if (!jobApplications.isUserAllowed) {
+      setMessage("You access is Revoked by Admin please Contact Admin");
+    }
     if (jobApplications) {
       setApplications(jobApplications.applicationRecords);
     } else if (jobApplicationsError) {
       toast.error(jobApplicationsError.message);
     }
-  }, [jobApplications]);
+  }, []);
   const handleStatusUpdate = (e, applicationId) => {
     e.stopPropagation();
     const value = e.target.value;
@@ -65,6 +70,7 @@ export default function JobApplications() {
   };
   return (
     <JobPostingsContainer>
+      {message && <MessageComponent message={message} />}
       <h2>Job Applications</h2>
       {getJobApplicationsApiLoading || updateApiLoading ? (
         <p>Loading...</p>
