@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useApplyJobPostingApiHandler } from "../features/authentication/useApplyJobPostingApiHandler";
 import SpinnerComponent from "../ui/SpinnerComponent";
 import MessageComponent from "../ui/MessageComponent";
-
+import { CiBookmark } from "react-icons/ci";
 const MainContent = styled.div`
   flex: 1;
   padding: 20px;
@@ -103,7 +103,7 @@ const BookMarkContainer = styled.div`
   justify-content: center;
 `;
 const CardSectionTwo = styled.div`
-  width: 70%;
+  /* width: 70%; */
 `;
 const JobTitleText = styled.p`
   font-size: 16px;
@@ -114,7 +114,11 @@ const JobTitleText = styled.p`
 `;
 const CompanyIcon = styled.div``;
 
-const JobTags = styled.div``;
+const JobTags = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+`;
 
 const JObCardFooter = styled.div`
   padding: 0.7rem;
@@ -139,6 +143,45 @@ const DeatilsButton = styled.button`
   position: absolute;
   bottom: 20px;
   right: 20px;
+`;
+const SortByLabel = styled.label`
+  font-family: "orkneyregular", "Outfit Variable", sans-serif;
+  font-size: 1.5rem;
+  color: #a9a9a9;
+`;
+const FontLabelHeading = styled.h1`
+  font-family: "orkneybold", "Outfit Variable", sans-serif;
+  font-size: 3rem;
+  color: black;
+`;
+const FontTypeSV1 = styled.span`
+  font-family: "orkneyregular", "Outfit Variable", sans-serif;
+  font-size: 0.8rem;
+  color: black;
+`;
+const FontTypeSV2 = styled.span`
+  font-family: "orkneymedium", "Outfit Variable", sans-serif;
+  font-size: 1.2rem;
+  color: black;
+`;
+const FontTypeSV3 = styled.p`
+  font-family: "orkneymedium", "Outfit Variable", sans-serif;
+  font-size: 1.8rem;
+  color: black;
+`;
+const FontTypeSV4 = styled.span`
+  font-family: "orkneymedium", "Outfit Variable", sans-serif;
+  font-size: 1.2rem;
+  color: #551692;
+`;
+const JobKeyWords = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #551692;
+  border-radius: 0.7rem;
+  background-color: #f1e3ff;
+  padding: 0.4rem;
 `;
 
 const JobPostings = () => {
@@ -183,11 +226,11 @@ const JobPostings = () => {
     <MainContent>
       <HeaderSection>
         <HeaderStart>
-          <h1>Recommended jobs</h1>
+          <FontLabelHeading>Recommended jobs</FontLabelHeading>
           <JobCount>386</JobCount>
         </HeaderStart>
         <HeaderSortSection>
-          <label htmlFor="sort-option">Sort by:</label>
+          <SortByLabel htmlFor="sort-option">Sort by:</SortByLabel>
           <select id="sort-option">
             <option value="last-updated">Last updated</option>
           </select>
@@ -205,18 +248,25 @@ const JobPostings = () => {
             <JobPostingCard key={job.job_id}>
               <JobCardPalate>
                 <CardSectionOne>
-                  <JobDate>20 May, 2023</JobDate>
-                  <BookMarkContainer>&copy;</BookMarkContainer>
+                  <JobDate>
+                    <FontTypeSV1>20 May, 2023</FontTypeSV1>
+                  </JobDate>
+                  <BookMarkContainer>
+                    <CiBookmark />
+                  </BookMarkContainer>
                 </CardSectionOne>
                 <CardSectionOne>
                   <CardSectionTwo>
-                    <JobTitleText>{job.company}</JobTitleText>
-                    <p>{job.title}</p>
+                    <FontTypeSV2>{job.company}</FontTypeSV2>
+                    <FontTypeSV3>{job.title}</FontTypeSV3>
                   </CardSectionTwo>
                   <CompanyIcon>&copy;</CompanyIcon>
                 </CardSectionOne>
                 <JobTags>
-                  <span>Part time</span>
+                  <JobKeyWords>
+                    <FontTypeSV4>Part time</FontTypeSV4>
+                  </JobKeyWords>
+
                   <span>Senior level</span>
                   <span>Distant</span>
                   <span>Project work</span>

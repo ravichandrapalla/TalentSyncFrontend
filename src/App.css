@@ -1,5 +1,35 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
+@font-face {
+  font-family: "orkneylight";
+  src: url("assets/fonts/orkney/orkney-light-webfont.woff2") format("woff2"),
+    url("assets/fonts/orkney/orkney-light-webfont.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "orkneyregular";
+  src: url("assets/fonts/orkney/orkney-regular-webfont.woff2") format("woff2"),
+    url("assets/fonts/orkney/orkney-regular-webfont.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "orkneymedium";
+  src: url("assets/fonts/orkney/orkney-medium-webfont.woff2") format("woff2"),
+    url("assets/fonts/orkney/orkney-medium-webfont.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "orkneybold";
+  src: url("assets/fonts/orkney/orkney-bold-webfont.woff2") format("woff2"),
+    url("assets/fonts/orkney/orkney-bold-webfont.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
 input[type="file"]::-webkit-file-upload-button {
   visibility: hidden;
 }
