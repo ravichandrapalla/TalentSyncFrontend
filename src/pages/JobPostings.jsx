@@ -102,6 +102,7 @@ const BookMarkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 const CardSectionTwo = styled.div`
   /* width: 70%; */
