@@ -119,8 +119,8 @@ const CompanyIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
 
   border-radius: 50%;
   overflow: hidden;
@@ -244,6 +244,7 @@ const JobPostings = () => {
       {
         onSuccess: ({ message, jobPosts, isUserAllowed }) => {
           toast.success(message);
+          console.log("job posts are ", jobPosts);
           setJobPostings(jobPosts);
           if (!isUserAllowed) {
             setMessage("You access is Revoked by Admin please Contact Admin");
@@ -330,7 +331,7 @@ const JobPostings = () => {
                     <img
                       src={`https://logo.clearbit.com/${job.company}.com`}
                       alt="images"
-                      width={100}
+                      width={80}
                       onError={(e) => {
                         e.target.src = unKnownCompanyImage;
                       }}
@@ -338,15 +339,12 @@ const JobPostings = () => {
                   </CompanyIcon>
                 </CardSectionOne>
                 <JobTags>
-                  <JobKeyWords>
-                    <FontTypeSV4>Part time</FontTypeSV4>
-                  </JobKeyWords>
-                  <JobKeyWords>
-                    <FontTypeSV4>Senior level</FontTypeSV4>
-                  </JobKeyWords>
-                  <JobKeyWords>
-                    <FontTypeSV4>Project work</FontTypeSV4>
-                  </JobKeyWords>
+                  {job.skills &&
+                    job.skills.map((skill, i) => (
+                      <JobKeyWords key={i}>
+                        <FontTypeSV4>{skill}</FontTypeSV4>
+                      </JobKeyWords>
+                    ))}
                 </JobTags>
               </JobCardPalate>
               <JObCardFooter>

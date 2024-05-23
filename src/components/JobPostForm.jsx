@@ -5,7 +5,7 @@ import SpinnerComponent from "../ui/SpinnerComponent";
 import { usePostJobApiHandler } from "../features/authentication/usePostJobApiHandler";
 import toast from "react-hot-toast";
 import TagsContainer from "./TagsContainer";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TagInput from "./TagInput";
 import AutoCompleteOptions from "./AutoCompleteOptions";
 const skills = [
@@ -231,11 +231,13 @@ export default function JobPostForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     defaultValues: {
       title: "",
       description: "",
       company: "",
+      skills: [],
       location: "",
       salary: 0,
     },
@@ -244,6 +246,13 @@ export default function JobPostForm() {
   const [tags, setTags] = useState([]);
   const [options, setOptions] = useState([]);
 
+  useEffect(() => {
+    setValue(
+      "skills",
+      tags.map((tag) => tag.name)
+    );
+  }, [tags, setValue]);
+
   const onSubmit = (data) => {
     console.log(data);
     jobPost(data, {
@@ -251,6 +260,7 @@ export default function JobPostForm() {
         title: "",
         description: "",
         company: "",
+        skills: [],
         location: "",
         salary: 0,
       }),
@@ -297,6 +307,7 @@ export default function JobPostForm() {
       );
 
       if (existingTag) {
+        setOptions([]);
         return;
       }
       console.log("here i adding", value);
@@ -308,6 +319,7 @@ export default function JobPostForm() {
       ];
 
       setTags(newTags);
+      setOptions([]);
       console.log("set done", newTags);
     },
     [tags]
@@ -349,9 +361,23 @@ export default function JobPostForm() {
           </label>
           <TagInputContainer>
             <TagsContainer tags={tags} removeTag={removeTag} />
-            <TagInput tags={tags} onChange={handleChange} addTag={addTag} />
+            <TagInput
+              id="skills"
+              tags={tags}
+              onChange={handleChange}
+              addTag={addTag}
+              register={register}
+              // clearOptions={() => setOptions([])}
+            />
           </TagInputContainer>
-          <AutoCompleteOptions addTag={addTag} options={options} />
+          {errors.skills && (
+            <span className="error">This field is required</span>
+          )}
+          <AutoCompleteOptions
+            addTag={addTag}
+            options={options}
+            // clearOptions={() => setOptions([])}
+          />
         </FormElement>
         <FormElement>
           <label htmlFor="company" style={{ minWidth: "200px" }}>

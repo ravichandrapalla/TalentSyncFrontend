@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 // eslint-disable-next-line no-unused-vars
-function TagInput({ tags, onChange, addTag }) {
+function TagInput({ tags, onChange, addTag, register, id }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (e) => {
@@ -23,10 +23,11 @@ function TagInput({ tags, onChange, addTag }) {
 
   return (
     <input
+      id={id}
       type="text"
-      value={inputValue}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
+      value={inputValue}
       placeholder="Type and press enter to add tag"
     />
   );
