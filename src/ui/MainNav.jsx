@@ -12,10 +12,12 @@ import { MdOutlinePeopleAlt } from "react-icons/md";
 import { BiFileFind } from "react-icons/bi";
 import { IoColorFilterOutline } from "react-icons/io5";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "../features/authentication/UserContext";
 import { useSelector } from "react-redux";
 import { CgProfile } from "react-icons/cg";
+import useJobApplications from "../features/authentication/useJobApplications";
+import JobCard from "../components/JObCard";
 
 const NavList = styled.ul`
   display: flex;
@@ -61,10 +63,32 @@ const StyledNavLink = styled(NavLink)`
     color: var(--color-brand-600);
   }
 `;
+const StyledSubMenuContainer = styled.div`
+  position: absolute;
+  background-color: red;
+  left: 25rem;
+  top: 0;
+  padding: 1rem;
+`;
+const StyledSubMenuItem = styled.div`
+  display: flex;
+  background-color: green;
+  width: 300px;
+  height: 200px;
+`;
+const JobContainer = styled.div`
+  position: absolute;
+  left: 25rem;
+  top: -1rem;
+  width: 35rem;
+  z-index: 1000;
+`;
 
 function MainNav() {
   const userData = useContext(UserContext);
   const storeData = useSelector((state) => state);
+  const [submenuOpen, setSubmenuOpen] = useState(false);
+  const { jobApplicationsData, isLoading, error } = useJobApplications();
   useEffect(() => {
     console.log("current page is -------->", storeData.tabSlice.tab);
   }, [storeData.tabSlice]);
@@ -91,7 +115,7 @@ function MainNav() {
             </StyledNavLink>
           </li>
         )}
-        {(userData.role === "Admin" || userData.role === "Recruiter") && (
+        {userData.role === "Admin" && (
           <li>
             <StyledNavLink to="/recruiter">
               {userData.role === "Admin" ? (
@@ -148,11 +172,38 @@ function MainNav() {
           </li>
         )}
         {userData.role === "Recruiter" && (
-          <li>
-            <StyledNavLink to="/job-applications">
+          <li
+            style={{ position: "relative" }}
+            onBlur={() => {
+              setTimeout(() => {
+                setSubmenuOpen((prev) => !prev);
+              }, 300);
+            }}
+          >
+            <StyledNavLink
+              // to="/job-applications"
+              onClick={() => setSubmenuOpen((prev) => !prev)}
+            >
               <HiOutlineCog6Tooth />
               <span>Job Applications</span>
             </StyledNavLink>
+            {submenuOpen &&
+              !isLoading &&
+              jobApplicationsData.applicationRecords.length > 0 && (
+                <JobContainer>
+                  {jobApplicationsData.applicationRecords.map((application) => {
+                    return (
+                      <JobCard
+                        key={application.job_id}
+                        jobId={application.job_id}
+                        position={application.title}
+                        company={application.company}
+                        applications={application.application_count}
+                      />
+                    );
+                  })}
+                </JobContainer>
+              )}
           </li>
         )}
         {userData.role === "Client" && (
@@ -169,3 +220,6 @@ function MainNav() {
 }
 
 export default MainNav;
+
+/*
+ */

@@ -490,15 +490,19 @@ export async function applyJobPosting(jobId) {
   }
 }
 
-export async function getJobApplications() {
+export async function getJobApplications(jobId) {
   const token = sessionStorage.getItem("token");
   if (!token) throw new Error("Error in token Verification");
+  console.log("sending jobId ", jobId);
   try {
     const response = await axiosInstance.get(
       `${config.apiBaseUrl}/getJobApplications`,
       {
         headers: {
           Authorization: token,
+        },
+        params: {
+          jobId,
         },
       }
     );
@@ -563,5 +567,24 @@ export async function revokeUserAccess(userId) {
     return { message };
   } catch (error) {
     return error;
+  }
+}
+
+export async function getJobApplicationsForRecruiter() {
+  const token = sessionStorage.getItem("token");
+  if (!token) throw new Error("Error in token Verification");
+  try {
+    const response = await axiosInstance.get(
+      `${config.apiBaseUrl}/getRecruiterJobApplications`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const { message, applicationRecords, isUserAllowed } = response.data;
+    return { message, applicationRecords, isUserAllowed };
+  } catch (error) {
+    return error.message;
   }
 }

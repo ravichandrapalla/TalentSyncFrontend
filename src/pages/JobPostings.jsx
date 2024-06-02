@@ -130,6 +130,7 @@ const JobTags = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  min-height: 6rem;
   justify-content: flex-start;
   align-items: center;
 `;

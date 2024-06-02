@@ -62,7 +62,10 @@ function App() {
             <Route path="clients" element={<Client />} />
             <Route path="findclient" element={<FindClients />} />
             <Route path="job-postings" element={<JobPostings />} />
-            <Route path="job-applications" element={<JobApplications />} />
+            <Route
+              path="job-applications/:jobId"
+              element={<JobApplications />}
+            />
             <Route path="My-applications" element={<MyApplications />} />
           </Route>
 

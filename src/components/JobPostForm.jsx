@@ -222,7 +222,7 @@ const ButtonsContainer = styled.div`
 
 export const TagInputContainer = styled.div`
   border: 1px solid black;
-  padding: 4px 4px 6px 4px;
+  padding: 4px 2px;
   display: flex;
 `;
 export default function JobPostForm() {
@@ -379,6 +379,7 @@ export default function JobPostForm() {
             // clearOptions={() => setOptions([])}
           />
         </FormElement>
+
         <FormElement>
           <label htmlFor="company" style={{ minWidth: "200px" }}>
             Company Name
