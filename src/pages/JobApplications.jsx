@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useUpdateStatus } from "../features/authentication/useApplicationStatusApiHandler";
 import MessageComponent from "../ui/MessageComponent";
 import { useParams } from "react-router";
+import { useQueryClient } from "react-query";
 const JobPostingsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -62,6 +63,8 @@ const StyledOption = styled.option`
 
 export default function JobApplications() {
   const { jobId } = useParams();
+  const queryClient = useQueryClient();
+
   const [message, setMessage] = useState("");
   const {
     jobApplications,
@@ -76,6 +79,10 @@ export default function JobApplications() {
     if (Array.isArray(jobApplications) && !jobApplications.isUserAllowed) {
       setMessage("You access is Revoked by Admin please Contact Admin");
     }
+    console.log(
+      "setting status --> ",
+      jobApplications?.applicationRecords[0].status
+    );
     if (jobApplications) {
       setApplications(jobApplications.applicationRecords);
     } else if (jobApplicationsError) {
@@ -88,7 +95,12 @@ export default function JobApplications() {
     updateStatus(
       { value, applicationId },
       {
-        onSuccess: (data) => toast.success(data?.message),
+        onSuccess: (data) => {
+          toast.success(data?.message);
+          queryClient.invalidateQueries({
+            queryKey: ["job-applications", jobId],
+          });
+        },
         onError: (err) => toast.error(err.message),
       }
     );
@@ -103,7 +115,7 @@ export default function JobApplications() {
         <p>No job postings found.</p>
       ) : (
         applications?.map((job) => (
-          <JobPostingCard key={job.job_id}>
+          <JobPostingCard key={job.application_id}>
             <JobTitle>{job.title}</JobTitle>
             <Info>
               <strong>Job Role:</strong> {job.title}
@@ -125,8 +137,9 @@ export default function JobApplications() {
             </Info>
             <Info>
               <strong>Status:</strong>{" "}
+              {console.log(`rerendering with status --> ${job.status}`)}
               <StyledSelect
-                defaultValue={job.status}
+                value={job.status || "No Status"}
                 onChange={(e) => handleStatusUpdate(e, job.application_id)}
               >
                 <StyledOption value="Pending">Pending</StyledOption>
