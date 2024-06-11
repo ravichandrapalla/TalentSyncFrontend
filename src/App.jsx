@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import PageNotFound from "./pages/PageNotFound";
 import Login from "./pages/Login";
 import GlobalStyles from "./styles/GlobalStyles";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import { SignUp } from "./pages/SignUp";
 
@@ -30,6 +30,10 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 60 * 1000,
+      cacheTime: 60 * 1000,
+      onError: (error) => {
+        toast.error(error.message);
+      },
     },
   },
 });

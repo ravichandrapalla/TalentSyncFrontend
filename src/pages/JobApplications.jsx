@@ -79,10 +79,10 @@ export default function JobApplications() {
     if (Array.isArray(jobApplications) && !jobApplications.isUserAllowed) {
       setMessage("You access is Revoked by Admin please Contact Admin");
     }
-    console.log(
-      "setting status --> ",
-      jobApplications?.applicationRecords[0].status
-    );
+    // console.log(
+    //   "setting status --> ",
+    //   jobApplications?.applicationRecords[0].status
+    // );
     if (jobApplications) {
       setApplications(jobApplications.applicationRecords);
     } else if (jobApplicationsError) {
