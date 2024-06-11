@@ -3,24 +3,21 @@ import { getCurrentUserUpdatedDetails as getCurrentUserUpdatedDetailsApi } from 
 
 export default function useUserUpToDateDetails() {
   // const queryClient = useQueryClient();
-  const { mutate: getUptoDateDetails, isLoading } = useMutation({
-    mutationFn: getCurrentUserUpdatedDetailsApi,
-    onSuccess: ({ message, updatedRecord }) => {
-      return updatedRecord;
-    },
-    onError: ({ message }) => {
-      return message;
-    },
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["userDetails"],
+    queryFn: getCurrentUserUpdatedDetailsApi,
   });
-  return { getUptoDateDetails, isLoading };
-  
+  console.log("lllllllllllllllllllll ---> ", data, isLoading);
+  return { data, isLoading, error };
 }
-// const {
-  //   isLoading,
-  //   error,
-  //   updatedRecord: data,
-  // } = useQuery({
-  //   queryKey: ["userData"],
-  //   queryFn: getCurrentUserUpdatedDetailsApi,
-  // });
-  // return { isLoading, error, data };
+
+/** "userDetails",
+    getCurrentUserUpdatedDetailsApi,
+    {
+      onError: ({ message }) => {
+        return message;
+      },
+      onSuccess: (data) => {
+        return data;
+      },
+    } */

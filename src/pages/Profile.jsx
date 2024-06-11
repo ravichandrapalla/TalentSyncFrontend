@@ -12,6 +12,8 @@ import { getCitiesForCountry, uploadResume } from "../services/apiAuth";
 import { createClient } from "@supabase/supabase-js";
 import useAvatarManager from "../features/authentication/avatarManager";
 import "../../src/App.css";
+import { useQueryClient } from "react-query";
+import useGetCities from "../features/authentication/useGetCities";
 
 const StyledSection = styled.section`
   height: 100%;
@@ -131,29 +133,52 @@ const FileInput = styled.input.attrs({ type: "file" })`
 `;
 
 const ProfileView = () => {
-  const [currUserData, setCurrUserData] = useState({});
+  const queryClient = useQueryClient();
   const [availableCities, setAvailableCities] = useState([]);
-  const [localAPiLoading, setLocalApiLoading] = useState(false);
   const [avatar, setAvatar] = useState(null);
-  const { updateUserAvatarManager, isLoading } = useAvatarManager();
+  const { updateUserAvatarManager, isLoading: isAvatarLoading } =
+    useAvatarManager();
+  // const [currUserData, setCurrUserData] = useState({});
+  const {
+    data: citiesData,
+    error: citiesApiError,
+    isLoading: getCitiesApiLoading,
+  } = useGetCities();
+  useEffect(() => {
+    console.log("heres the data ---> ", citiesData, error, getCitiesApiLoading);
+    if (!getCitiesApiLoading && citiesData.data.data.length) {
+      setAvailableCities(citiesData.data.data);
+    }
+  }, [citiesData, citiesApiError, getCitiesApiLoading]);
+  // console.log("cities are ", cities);
+  const [localAPiLoading, setLocalApiLoading] = useState(false);
 
   console.log("component rendering");
-  const { getUptoDateDetails, isLoading: getReqLoading } =
-    useUserUpToDateDetails();
+  const {
+    data,
+
+    isLoading: userDataLaading,
+    error,
+  } = useUserUpToDateDetails();
+  let currUserData = data?.updatedRecord ?? {};
+
   const { updateProfile, isLoading: setReqLoading } = useClientProfile();
 
   const handleUpdate = (e, field) => {
     // e.stopPropagation();
     // e.preventDefault();
+
     const { value } = e.target;
-    console.log("compare --> ", value, currUserData[field]);
+    // console.log("compare --> ", value, currUserData[field]);
+    console.log("trrigger aah", value, currUserData[field], e);
     if (!value || value === currUserData[field]) return;
     updateProfile(
       { [field]: value },
       {
         onSuccess: ({ message, updatedRecord }) => {
           toast.success("Profile Updated Successfully");
-          setCurrUserData(updatedRecord[0]);
+          queryClient.invalidateQueries({ queryKey: "userDetails" });
+          // setCurrUserData(updatedRecord[0]);
         },
         onError: (err) => {
           toast.error(err || err.message);
@@ -194,31 +219,36 @@ const ProfileView = () => {
   };
 
   useEffect(() => {
-    getUptoDateDetails(
-      {},
-      {
-        onSuccess: ({ updatedRecord }) => {
-          setCurrUserData(updatedRecord);
-          // toast.success("Profile Updated Successfully");
-          console.log("seeting data ", updatedRecord);
-        },
-        onError: (err) => {
-          toast.error(err || err.message);
-        },
-      }
-    );
-    setLocalApiLoading(true);
-    getCitiesForCountry("india")
-      .then(({ data }) => {
-        setAvailableCities(data.data);
-      })
-      .catch((err) => toast.error(err.message))
-      .finally(() => {
-        setLocalApiLoading(false);
-      });
+    // getUptoDateDetails(
+    //   {},
+    //   {
+    //     onSuccess: ({ updatedRecord }) => {
+    //       setCurrUserData(updatedRecord);
+    //       // toast.success("Profile Updated Successfully");
+    //       console.log("seeting data ", updatedRecord);
+    //     },
+    //     onError: (err) => {
+    //       toast.error(err || err.message);
+    //     },
+    //   }
+    // );
+    // setLocalApiLoading(true);
+    // getCitiesForCountry("india")
+    //   .then(({ data }) => {
+    //     setAvailableCities(data.data);
+    //   })
+    //   .catch((err) => toast.error(err.message))
+    //   .finally(() => {
+    //     setLocalApiLoading(false);
+    //   });
   }, []);
 
-  return getReqLoading || setReqLoading || localAPiLoading ? (
+  useEffect(() => {
+    console.log(`available cities are --> ${availableCities}`);
+  }, [availableCities]);
+  // console.log("currentuserData ", currUserData);
+
+  return userDataLaading || setReqLoading || getCitiesApiLoading ? (
     <SpinnerComponent />
   ) : (
     <StyledSection>

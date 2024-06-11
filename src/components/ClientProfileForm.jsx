@@ -108,8 +108,8 @@ export default function ClientProfileForm({
           <StyledSelect
             type="text"
             id="location"
-            defaultValue={currUserData?.location || ""}
-            onBlur={(e) => handleUpdate(e, "location")}
+            value={currUserData?.location || "No value"}
+            onChange={(e) => handleUpdate(e, "location")}
           >
             {availableCities.length > 0 &&
               availableCities.map((city) => {
