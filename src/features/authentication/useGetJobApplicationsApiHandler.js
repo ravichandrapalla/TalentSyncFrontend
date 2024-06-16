@@ -11,6 +11,7 @@ export function useGetJobApplicationsApiHandler(jobId) {
     queryKey: ["job-applications", jobId],
     queryFn: () => getJobApplicationsApi(jobId),
   });
+  
   console.log("handler data --> ", jobApplications, isLoading, error);
   return { jobApplications, isLoading, error };
 }

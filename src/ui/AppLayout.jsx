@@ -18,7 +18,7 @@ const StyledAppLayout = styled.div`
 
 const Main = styled.main`
   /* background-color: var(--color-grey-50); */
-  margin: 4rem 4.8rem 6.4rem;
+  /* margin: 4rem 4.8rem 6.4rem; */
   display: flex;
   justify-content: center;
   overflow-y: auto;
