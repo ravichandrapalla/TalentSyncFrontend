@@ -22,12 +22,12 @@ const StyledModal = styled.div`
     position: absolute; /* Sets the position absolute to the top div */
     top: 5px;
     right: 23.4%; /* position the little arrow */
+    /* background-color: red; */
     margin-left: -15px;
-    margin-top: -15px; /* Set margin equal to border px */
+    margin-top: -15px;
     width: 0;
-    z-index: 100000;
-
     height: 0;
+    z-index: 100000;
     border-bottom: solid 10px grey; /* Creates the arrow pointing up, to change to a notch instead user border-top */
     border-left: solid 10px transparent; /* Creates triangle effect */
     border-right: solid 10px transparent; /* Creates triangle effect */

@@ -10,7 +10,7 @@ const StyledSection = styled.section`
   display: flex;
   gap: 2.5rem;
 
-  border-radius: 1rem;
+  /* border-radius: 1rem; */
 `;
 // const ClinetTabContainer = styled.div`
 //   height: 100%;
