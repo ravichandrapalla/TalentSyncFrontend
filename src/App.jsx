@@ -25,6 +25,7 @@ import JobPostings from "./pages/JobPostings";
 import JobApplications from "./pages/JobApplications";
 import MyApplications from "./pages/MyApplications";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,10 +40,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // useEffect(
-  //   () => console.log(sessionStorage.getItem("userData").token, "session"),
-  //   []
-  // );
+  useEffect(() => console.log("Hello world", import.meta.env), []);
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={true} />
