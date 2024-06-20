@@ -1,12 +1,11 @@
 const config = {
   development: {
-    apiBaseUrl: "http://localhost:4000",
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
     supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
     supabaseKey: import.meta.env.VITE_SUPABASE_KEY,
   },
   production: {
-    apiBaseUrl:
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/prod",
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
     supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
     supabaseKey: import.meta.env.VITE_SUPABASE_KEY,
   },

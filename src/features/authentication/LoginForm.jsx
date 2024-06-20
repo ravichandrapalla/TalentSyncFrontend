@@ -8,12 +8,14 @@ import useLogin from "./useLogin";
 import SpinnerMini from "./../../ui/SpinnerMini";
 import StyledInput from "../../ui/StyledInput";
 import { useNavigate } from "react-router";
+import config from "../../config";
 
 const RegisterLink = styled.a`
   ${(props) =>
     props.type === "registerlink" &&
     css`
       align-self: flex-end;
+      cursor: pointer;
     `}
   font-size: 1rem;
   color: green;
@@ -67,7 +69,11 @@ function LoginForm() {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <RegisterLink type="registerlink" href="http://localhost:5173/register">
+        <RegisterLink
+          type="registerlink"
+          // href={`${config.apiBaseUrl}/register`}
+          onClick={() => navigate("/register")}
+        >
           New user? Signup
         </RegisterLink>
       </FormRowVertical>
